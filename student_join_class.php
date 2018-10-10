@@ -39,9 +39,20 @@
     <?php include('./layouts/header.php'); ?>
     <?php include('./layouts/menu.php'); ?>
 
+
     <!-- content -->
     <div>
         <h4>STUDENT JOIN CLASS</h4>
+        
+        
+        <form id="qqq" action="./student_join_form.php" method="post">
+            <?php
+                //สร้าง input hidden เพื่อเก็บข้อมูล student email
+                echo("<input type='hidden' name='std_email' id='std_email' value='{$_SESSION['email']}'>");
+            ?>
+            <input type="hidden" name="class_id" id="class_id" value="">
+            
+        </form>
         
 
         <div class="container">
@@ -71,11 +82,14 @@
                 <div class="col-md-3"><p id="subjectname"></p></div>
                 <div class="col-md-4"><p id="desc"></div>
                 <div class="col-md-3"><p id="teacher"></p></div>
-                <div class="col-md-2">-</div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary" style="display:none" id="join" type="submit" value="Join" form="qqq">
+                </div>
             </div>
+
+            
         </div>
     </div>
-
     
     <!-- Footer -->
     <div>
@@ -86,6 +100,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let glo_classid = "";    //ตัวแปรแบบ global สำหรับเก็บ class_id
+
         $("#btn_search").on("click", () => {
             $("#score_req").val("");
             let text = $("#search").val();
@@ -99,11 +115,11 @@
                 data: data,
                 success: function(result) {
 
-                    //1 check ว่ามีข้อมูลวิชาหรือไม่ 
-                    //โดย สร้างตัวแปรชื่อ test มาเพื่อเก็บค่าผลลัพธ์การ parse resullt
-                    //ถ้าผลลัพธ์ ที่ได้กลับมา คือ คำว่า error
-                    //ให้ alert ว่า ไม่มีรหัส class นี้
-                    //
+                    /*1 check ว่ามีข้อมูลวิชาหรือไม่ 
+                    #โดย สร้างตัวแปรชื่อ test มาเพื่อเก็บค่าผลลัพธ์การ parse resullt
+                    #ถ้าผลลัพธ์ ที่ได้กลับมา คือ คำว่า error
+                    #ให้ alert ว่า ไม่มีรหัส class นี้
+                    */
                     console.log(result)
                     //alert(typeof result)
 
@@ -113,6 +129,7 @@
                         $("#subjectname").html("-")
                         $("#desc").html("-")
                         $("#teacher").html("-")
+                        $("#join").attr("style", "display:none");
 
                         alert("ไม่มีรหัส class นี้")
                     } else{
@@ -123,12 +140,24 @@
                         $("#subjectname").html(objResult['title'])
                         $("#desc").html(objResult['description'])
                         $("#teacher").html(objResult['name'])
-                    }
-                    
+                        $("#join").attr("style", "display");
+                        //$("#join").html("-")
+
+                        glo_classid = objResult['id']
+
+                        let st = $("#std_id").val();
+                        //alert(st + ' | ' + glo_classid)
+                        $("#class_id").val(glo_classid)
+                    } 
                 }
             })
-
-            
         });
+
+        //$("#btn_join").on("click", () => {
+        //    //alert(glo_classid)
+        //    let st = $("#std_id").val();
+        //    alert(st + ' | ' + glo_classid)
+        //    $("#class_id").val(glo_classid)
+        //});
     });
 </script>
