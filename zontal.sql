@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2018 at 03:26 PM
+-- Generation Time: Oct 11, 2018 at 04:25 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.7
 
@@ -47,7 +47,7 @@ CREATE TABLE `class` (
 --
 
 INSERT INTO `class` (`id`, `title`, `teacher_email`, `description`, `password`, `pergroup`, `v`, `a`, `k`, `date_start`, `date_end`) VALUES
-('class1', 'CS411', 'tea03@gmail.com', 'Algo', 1234, 5, 1, 0, 1, '2018-10-01 08:30:00', '2018-10-01 08:30:00'),
+('class1', 'CS411', 'tea03@gmail.com', 'Algo', 1234, 2, 1, 0, 1, '2018-10-01 08:30:00', '2018-10-01 08:30:00'),
 ('class2', 'CS422', 'tea03@gmail.com', 'advance SA', 1234, 5, 1, 0, 1, '2018-10-01 08:30:00', '2018-10-01 08:30:00');
 
 -- --------------------------------------------------------
@@ -88,6 +88,29 @@ INSERT INTO `permissions` (`id`, `title`) VALUES
 (1, 'admin'),
 (2, 'teacher'),
 (3, 'student');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pre_data`
+--
+
+CREATE TABLE `pre_data` (
+  `id` int(11) NOT NULL,
+  `class_id` varchar(30) NOT NULL,
+  `std_email` varchar(150) NOT NULL,
+  `score` varchar(250) NOT NULL COMMENT 'ค่า 3ตัวแรก คือ v,a,k หลังจากนั้นคือ คะแนนที่ต้องการ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `pre_data`
+--
+
+INSERT INTO `pre_data` (`id`, `class_id`, `std_email`, `score`) VALUES
+(5, 'class1', 'std01@gmail.com', '[\"7\",\"0\",\"10\",\"3.5\",\"3.8\"]'),
+(6, 'class1', 'std02@gmail.com', '[\"8\",\"0\",\"10\",\"2\",\"2.8\"]'),
+(7, 'class1', 'std03@gmail.com', '[\"8\",\"0\",\"10\",\"3\",\"3.5\"]'),
+(8, 'class1', 'std04@gmail.com', '[\"2\",\"0\",\"10\",\"3.2\",\"2.4\"]');
 
 -- --------------------------------------------------------
 
@@ -152,7 +175,7 @@ INSERT INTO `subject` (`id`, `title`, `decs`) VALUES
 
 CREATE TABLE `subject_req` (
   `id` int(11) NOT NULL,
-  `title` varchar(30) NOT NULL,
+  `title` varchar(30) NOT NULL COMMENT 'รายวิชาที่ต้องการ',
   `class_id` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -191,9 +214,11 @@ INSERT INTO `users` (`id`, `email`, `u_id`, `name`, `password`, `v`, `a`, `k`, `
 (1, 'std01@gmail.com', 'std01', 'student_com', '1234', 7, 3, 10, 3),
 (2, 'admin@gmail.com', 'admin01', 'admin', '1234', 0, 0, 0, 1),
 (3, 'tea01@gmail.com', 'tea01', 'teacher_com', '1234', 0, 0, 0, 2),
-(5, 'std02@gmail.com', 'std02', 'student02', '1234', 0, 0, 0, 3),
-(7, 'tea02@gmail.com', 'tea02', 'teacher02', '1234', 0, 0, 0, 2),
-(9, 'tea03@gmail.com', 'tea03', 'teacher03', '1234', 0, 0, 0, 2);
+(5, 'std02@gmail.com', 'std02', 'student02', '1234', 8, 2, 10, 3),
+(7, 'tea02@gmail.com', 'tea02', 'teacher02', '1234', 8, 2, 10, 2),
+(9, 'tea03@gmail.com', 'tea03', 'teacher03', '1234', 0, 0, 0, 2),
+(10, 'std03@gmail.com', 'std03', 'student03', '1234', 8, 2, 10, 3),
+(11, 'std04@gmail.com', 'std04', 'student04', '1234', 2, 8, 10, 3);
 
 --
 -- Indexes for dumped tables
@@ -217,6 +242,14 @@ ALTER TABLE `gen_classid`
 --
 ALTER TABLE `permissions`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pre_data`
+--
+ALTER TABLE `pre_data`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `class_id` (`class_id`),
+  ADD KEY `std_email` (`std_email`);
 
 --
 -- Indexes for table `student`
@@ -270,6 +303,12 @@ ALTER TABLE `permissions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `pre_data`
+--
+ALTER TABLE `pre_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
@@ -297,7 +336,7 @@ ALTER TABLE `subject_req`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -308,6 +347,13 @@ ALTER TABLE `users`
 --
 ALTER TABLE `class`
   ADD CONSTRAINT `class_ibfk_1` FOREIGN KEY (`teacher_email`) REFERENCES `users` (`email`);
+
+--
+-- Constraints for table `pre_data`
+--
+ALTER TABLE `pre_data`
+  ADD CONSTRAINT `pre_data_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class` (`id`),
+  ADD CONSTRAINT `pre_data_ibfk_2` FOREIGN KEY (`std_email`) REFERENCES `users` (`email`);
 
 --
 -- Constraints for table `student`

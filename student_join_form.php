@@ -3,6 +3,20 @@
 <?php
     include('config.php');
 ?>
+
+<?php
+    //ถ้าไม่ได้ login
+    if(!isset($_SESSION)) {
+        header("Location: http://{$url}");
+        die();
+    }
+    
+    //ถ้าไม่ใช้ Teacher
+    if($_SESSION['permission'] != 3) {
+        header("Location: http://{$url}");
+        die();
+    }
+?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
