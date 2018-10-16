@@ -237,6 +237,19 @@
                             "score"     : score}
                     console.log(data)
 
+                    $.ajax({
+                        url: 'ajax_student_join_form.php',
+                        type: 'post',
+                        data: data,
+                        success: function(result) {
+                        alert(result)
+                        if(result == "Success") {
+                            alert("x")
+                        }
+                        //window.location.replace("./student_join_class.php");
+                    }
+            });
+
                     
                 })
             });
