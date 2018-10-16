@@ -124,7 +124,8 @@
                     //alert(typeof result)
 
                     let test = JSON.parse(result)
-                    
+                    //ถ้าส่งข้อความกลับมาว่า "error"
+                    //ให้เคลีย form แล้ว alert ว่า "ไม่มีรหัส class นี้"
                     if(test == "error") {
                         $("#subjectname").html("-")
                         $("#desc").html("-")
@@ -146,7 +147,8 @@
                         glo_classid = objResult['id']
 
                         let st = $("#std_id").val();
-                        //alert(st + ' | ' + glo_classid)
+                        //set input type hidden id="class_id" ให้ value = class ที่เลือก 
+                        //เพื่อใช้ในการสร้าง form การกรอกข้อมูลต่อไป
                         $("#class_id").val(glo_classid)
                     } 
                 }

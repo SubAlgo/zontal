@@ -33,87 +33,149 @@
             <form action="" method="get">
                 <input type="text" name="cid" id="cid">
                 <input type="submit" value="submit">
+                <span class="btn btn-primary">ปุ่ม</span>
             </form>
+
+            
         </div>
 
 
         <?php
             if(isset($_GET['cid'])) {
-                $sql = "SELECT pre_data.class_id, pre_data.std_email, pre_data.score, class.pergroup, users.name 
+                $nStd; //จำนวนนักศึกษาที่ลงทะเบียนทั้งหมดในคลาส
+                $nGroup;
+                $perGroup;
+
+                $data;
+
+
+                $sql = "SELECT 
+                            pre_data.class_id, 
+                            pre_data.std_email, 
+                            pre_data.score, 
+                            class.pergroup, 
+                            users.name 
                         FROM `pre_data` LEFT JOIN class ON class.id = pre_data.class_id 
                         JOIN users ON users.email = pre_data.std_email
                         WHERE class_id = '{$_GET['cid']}'";
                
 
                 $result = mysqli_query($conn, $sql);
-                $mem_join = mysqli_num_rows($result); //จำนวนนักศึกษาที่เข้า join class ทั้งหมด
-                $std = [];
-                
-                $perGroup;
-                $std_score; //เก็บข้อมูลคะแนนของนักศึกษาแต่ละคน
-                $std_email = [];
+                $nStd = mysqli_num_rows($result);
 
-                if (mysqli_num_rows($result) > 0) {
+                if ($nStd > 0) {
                     $i = 0;
                     while($row = $result->fetch_assoc()) {
-                        
-                        $std[$i] = $row;
-                        $std_name[$i] = $row['name'];
-                        
-                        $perGroup = $row['pergroup'];
-                        $std_score[$i] = json_decode($row['score']);
-                        print_r($std_score[$i]);
-                        echo("<br>");
-                        $i++;
-                        //print_r($std_score[$i]);
+                        //print_r($row);
                         //echo("<br>");
-
+                        $perGroup = $row['pergroup'];
+                        $data[$i] = $row;
+                        print_r($data[$i]);
+                        echo("<br>");
                     } 
                 }
-                // $perGroup คือ จำนวนสมาชิกต่อกลุ่ม
-                echo("จำนวนสมากชิกต่อกลุ่ม: {$perGroup} / กลุ่ม<br>");   
-                //$mem_join คือ จำนวนนักศึกษาทั้งหมด       
-                echo("จำนวนนักศึกษาที่ลงทะเบียน: {$mem_join} คน <br>");
-                //nGroup คือ จำนวนกลุ่มทั้งหมด
-                $nGroup = $mem_join / $perGroup;
-                echo("จำนวนกลุ่มทั้งหมดมี: {$nGroup} กลุ่ม <br>");
-
-
-                echo("Email นักศึกษาคนที่1 :  {$std_name[0]} <br>");
-                echo("Email นักศึกษาคนที่2 :  {$std_name[1]} <br>");
-                echo("Email นักศึกษาคนที่3 :  {$std_name[2]} <br>");
-                echo("Email นักศึกษาคนที่4 :  {$std_name[3]} <br>");
                 
+                $nGroup = $nStd/$perGroup;
+
+
+                /*---------------SELECT TEST---------------- */
+                $sqlTest = "SELECT
+                                    class.title as class_title,
+                                    subject_req.title as subject_req,
+                                    test.std_email,
+                                    test.score
+                            FROM
+                                    subject_req
+                            LEFT JOIN class ON subject_req.class_id = class.id
+                            JOIN test ON test.sub_req_id = subject_req.id
+                            WHERE
+                                    class.title = 'CS411' AND test.std_email = 'std01@gmail.com'";
+
+                $res = mysqli_query($conn, $sqlTest);
+
+                $nRow = mysqli_num_rows($res);
+                echo("Test row =  {$nRow} <br>");
                 
-                //echo("สมาชิกกลุ่ม ที่1");
-
-                $nSubject = count($std_score[0]);
-                echo($nSubject);
-                //echo("<br>");
-                //print_r($std_score[0]);
-                echo("<br>");
-
-                for($i=0; $i < $nSubject; $i++) {   //วนรอบสมาชิกทั้งหมด
-                    for($j=0; $j < $mem_join; $j++){
-                            echo("{$std_score[$j][$i]} | ");
-                    } 
-                    echo("<br>");
+                if($nRow>0) {
+                    $i = 0;
+                    while($r = $res->fetch_assoc()) {
+                        print_r($r);
+                        echo("<br>");
+                        echo("{$r['score']} <br>");
+                    
+                    }
                 }
-                //print_r($std[0]);
-                //echo("<br>");
-                //print_r($std[1]);
-                //echo("<br>");
-                //echo(var_dump(json_decode($std[0]['score'])));
 
-                echo("<br>");
-                $myar = json_decode($std[0]['score']);
-                //echo($myar[2]);
-                
-                
-
+               
             }
             
         ?>
+
+        <div class="row">
+            <div class="col-md-12">
+            <?php
+                $data1 = array(
+                    'contact' => array(
+                        'city' => 'New York',
+                        'email' => 'my@mail.com'
+                        
+                    ),
+                    'enabled' => true,
+                    'firstName' => 'Robert',
+                    'lastName' => 'Exer'
+                );
+
+                $data_string = json_encode($data1);
+
+                print_r($data_string);
+                echo("<br>");
+                print_r($data1['contact']['city']);
+
+               // $dc ={"contact":{"city":"New York","email":"my@mail.com"},"enabled":true,"firstName":"Robert","lastName":"Exer"};
+
+            ?>
+            
+            </div>
+        
+        
+        </div>
+
+        <div class="container">
+            <br>
+            <div class="row text-center">
+                <div class="col-md-12"><p>จำนวนนักศึกษาที่ลงทะเบียนในคลาส : <?php echo ("{$nStd}"); ?> คน</p></div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-md-12"><p>จำนวนกลุ่มทั้งหมด : <?php echo ("{$nGroup}"); ?> กลุ่ม</p></div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-md-12"><p>จำนวนนักศึกษาต่อกลุ่ม : <?php echo ("{$perGroup}"); ?> คน / กลุ่ม</p></div>
+            </div>
+            
+            <?php 
+                echo("<br>");
+                print_r($data[0]);
+                echo("<br>");
+                echo($data[0]['score'] . "<br>");
+                echo(var_dump($data[0]['score'][0]) . "<br>");
+                
+                for($i=0; $i<$nGroup; $i++){
+                    
+                }
+
+                /***********************************************************************
+                 * สิ่งที่เราจะทำ คือ เราจะปรับโครงสร้าง DB ใหม่
+                 * และ เพิ่มโค้ดให้ตรวจสอบว่า นักศึกษาคนนั้นได้กรอกคะแนน หรือ ยัง 
+                 * ถ้ายังไม่ได้กรอก โค้ดจะเป็นการ insert into แต่ถ้ากรอกแล้ว code จะเป็นการ update
+                ***********************************************************************/
+               
+            ?>
+
+            
+        
+        </div>
 
     </div>
 

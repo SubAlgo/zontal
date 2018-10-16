@@ -3,20 +3,6 @@
 <?php
     include('config.php');
 ?>
-
-<?php
-    //ถ้าไม่ได้ login
-    if(!isset($_SESSION)) {
-        header("Location: http://{$url}");
-        die();
-    }
-    
-    //ถ้าไม่ใช้ Teacher
-    if($_SESSION['permission'] != 3) {
-        header("Location: http://{$url}");
-        die();
-    }
-?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,191 +12,235 @@
     <?php
         include("./layouts/meta.php");
     ?>
-    <!--
-    
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    -->
-    <title>Join class form</title>
+   
+    <title>Join Class Form</title>
 </head>
 <body>
     <?php include('./layouts/header.php'); ?>
     <?php include('./layouts/menu.php'); ?>
 
     <!-- content -->
-    <div>
+    <div class="container-fluid">
+        <!-- ส่วนหัว Form -->
         <div class="container text-center">
-            <h3>Join class form</h3>
+            <h3>Join Class Form</h3>
             <p>หน้าสำหรับให้นักศึกษาเข้ามากรอกข้อมูลคะแนนสำหรับการ join class</p>
         </div>
-        
-        <?php
-            $data = $_POST;
-            print_r($data);
-            //echo("<br>");
 
-            /*------------------Select Class and Subject require Data------------------------*/
 
-            $sqlstudent = "";
-            $sql = "SELECT
-                            class.title,
-                            class.description,
-                            class.teacher_email,
-                            class.pergroup,
-                            class.v,
-                            class.a,
-                            class.k,
-                            subject_req.title AS 'sub_req'
-                    FROM
-                            class
-                    LEFT JOIN subject_req ON class.id = subject_req.class_id
-                    WHERE
-                            class.id = '{$data['class_id']}'";            
-
-            $title;
-            $description;
-            $teacher_email;
-            $perGroup;
-            $v;
-            $a;
-            $k;
-            $sub_req = array();
-
-            $result = mysqli_query($conn, $sql);
-
-            if (mysqli_num_rows($result) > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $title          = $row['title'];
-                    $description    = $row['description'];
-                    $perGroup       = $row['pergroup'];
-                    $v              = $row['v'];
-                    $a              = $row['a'];
-                    $k              = $row['k'];
-                    array_push($sub_req, $row['sub_req']);
-                } 
-            }
-
-            /*-----------------Select Student Data--------------------------*/
-
-            $sqlstudent = "SELECT v, a, k FROM users WHERE email = '{$data['std_email']}'";
-
-            $resultstd = mysqli_query($conn, $sqlstudent);
-            if(mysqli_num_rows($resultstd) > 0) {
-                while($stdrow = $resultstd->fetch_assoc()) {
-                    $std_vScore = $stdrow['v'];
-                    $std_aScore = $stdrow['a'];
-                    $std_kScore = $stdrow['k'];
-                }
-            }
-            echo("<br>");
-            echo("std_vScore = {$std_vScore}");
-            echo("<br>");
-            echo("std_aScore = {$std_aScore}");
-            echo("<br>");
-            echo("std_kScore = {$std_kScore}");
-            echo("<br>");
-            /*---------------------------------------------------*/
-
-            $sqlstudent = "";
-            echo($title);
-            echo("<br>");
-            echo($description);
-            echo("<br>");
-            //echo($perGroup);
-            //echo("<br>");
-            echo($v);
-            echo("<br>");
-            echo($a);
-            echo("<br>");
-            echo($k);
-            echo("<br>");
-            print_r($sub_req);
-            echo("<br>");
-            echo ("จำนวนวิชาที่ต้องผ่าน ".count($sub_req));
-        ?>
-        <!-- พวก v_data จะมีข้อมูลเป็น 0,1 เพื่อใช้ในการสร้าง ฟอร์มกรอกข้อมูล -->
-        <input type="hidden" name="v_data" id="v_data" value="<?php echo($v);?>">
-        <input type="hidden" name="a_data" id="a_data" value="<?php echo($a);?>">
-        <input type="hidden" name="k_data" id="k_data" value="<?php echo($k);?>">
-        <input type="hidden" name="classid" id="classid" value="<?php echo($data['class_id']);?>">
-        <input type="hidden" name="stdemail" id="stdemail" value="<?php echo($data['std_email']);?>">
-        <?php
-            $nOfSubjectReq = count($sub_req);
-        ?>
-        <input type="hidden" name="nOfSubjectReq" id="nOfSubjectReq" value="<?php echo($nOfSubjectReq);?>">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">รายวิชา</div>
-                <div class="col-md-8"> <?php echo($title); ?> </div>
+        <!-- Show Data ทีได้รับมา -->
+        <div class="container" style="border: 1px solid black">
+            <div class="text-center">
+                <b>Data from $_POST</b><br>
+                <?php
+                    if($method == "GET") {
+                        header("Location: http://{$url}");
+                        die();
+                    }
+                    print_r($_POST);
+                    echo("<br>");
+                ?>
             </div>
-        
-            <div class="row">
-                <div class="col-md-4">Description</div>
-                <div class="col-md-8"> <?php echo($description); ?> </div>
-            </div>
-
-            <div class="row" id="v" style="display:none">
-                <div class="col-md-4">กรอกคะแนน v</div>
-                <div class="col-md-8">
-                    <input type="text" id="v_input" value="<?php echo("{$std_vScore}"); ?>" readonly>
-                </div>
-            </div>
-
-            <div class="row" id="a" style="display:none">
-                <div class="col-md-4">กรอกคะแนน a</div>
-                <div class="col-md-8">
-                    <input type="text" id="a_input" value="<?php echo("{$std_aScore}"); ?>" readonly>
-                </div>
-            </div>
-
-            <div class="row" id="k" style="display:none">
-                <div class="col-md-4">กรอกคะแนน k</div>
-                <div class="col-md-8">
-                    <input type="text" id="k_input" value="<?php echo("{$std_kScore}"); ?>" readonly>
-                </div>
-            </div>
-
-            
-            
-            
-            <?php
-            //Code สร้าง form สำหรับใส่คะแนนวิชาที่ต้องผ่านก่อนหน้า
-                $nSubreq = count($sub_req);
-                echo $nSubreq;
-                if($nSubreq > 0) {
-                    $i = 1;
-                    foreach($sub_req as $x) {
-                        echo("<div class='row'>");
-                            echo("<div class='col-md-4'> กรอกคะแนนวิชา {$x} </div>");
-                            echo("<div class='col-md-8'> <input type='number' id='sub{$i}'> </div>");
-                        echo("</div>");
-                        $i++;
-                    }  
-                }   
-            ?>
-            
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <!--<input class="btn btn-primary" type="submit" value="บันทึก">-->
-                    <span class="btn btn-primary" id="submit">บันทึก</span>
-                </div>
-            </div>
-            
-            ข้อมูลที่ต้องเก็บสำหรับเตรียม gen 1.classId 2.std_email 3.พวกคะแนน
-            {
-                "v"     : "$v",
-                "a"     : "$a",
-                "k"     : "$k",
-                "score": {
-                            "CS100": "80",
-                            "CS101": "85"
-                }
-            }
-            
         </div>
+        <hr>
+
+        <!-- Show Data -->
+        <div class="container" style="border: 1px solid black">
+            <div class="text-center">
+                <b>Data from select SQL</b><br>
+                <?php
+                    $std_email = $_POST['std_email'];
+                    $class_id = $_POST['class_id'];
+                    $class_name;
+                    $class_desc;
+                    $v_req;
+                    $a_req;
+                    $k_req;
+                    $v_score;
+                    $a_score;
+                    $k_score;
+                    $subject_req = [];
+
+                    /* Select ข้อมูล Class และ Subject_Require */
+                    $sql = "SELECT
+                                    class.title AS 'class_name',
+                                    class.description AS 'class_desc',
+                                    class.v AS 'v_req',
+                                    class.a AS 'a_req',
+                                    class.k AS 'k_req',
+                                    subject_req.id AS 'subject_id',
+                                    subject_req.title AS 'subject_req'
+                            FROM
+                                    class
+                            LEFT JOIN subject_req ON class.id = subject_req.class_id
+                            WHERE
+                                    class.id = '{$_POST['class_id']}'";
+
+                    $result = mysqli_query($conn, $sql);
+
+                    if(mysqli_num_rows($result) > 0) {
+                        while($row = $result->fetch_assoc()){
+                            print_r($row);
+                            echo("<br>");
+
+                            $class_name = $row['class_name'];
+                            $class_desc = $row['class_desc'];
+                            $v_req      = $row['v_req'];
+                            $a_req      = $row['a_req'];
+                            $k_req      = $row['k_req'];
+                            array_push($subject_req, $row['subject_req']);
+                        }
+                    }
+
+                    
+                ?>
+            </div>  
+        </div>
+        <br>
         
+        <!-- SELECT VAK Score -->
+        <div class="container text-center" style="border: 1px solid black">
+            <p>Select VAK Score</p>
+            <?php
+               /*Select VAK Score */
+               $sqlVAK = "SELECT v, a, k FROM users WHERE email = '{$std_email}'";
+               $vakResult = mysqli_query($conn, $sqlVAK);
+               if(mysqli_num_rows($vakResult) > 0) {
+                   while($row = $vakResult->fetch_assoc()) {
+                       $v = $row['v'];
+                       $a = $row['a'];
+                       $k = $row['k'];
+                   }
+               }
+               echo("{$v}, {$a}, {$k}")
+            ?>
+        </div>
+        <br>
+
+        <!-- Show Data ทีได้รับมา -->
+        <div class="container" style="border: 1px solid black">
+            <div class="text-center">
+                <b>Form</b><br>                
+            </div>
+            <form action="">
+                <input type="hidden" name="email" id="email" value="<?php echo($_POST['std_email']) ?>">
+
+                <div class="form-group row">
+                    <label for="className" class="col-sm-4 col-form-label">รายวิชา</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="class_id" id="class_id" value="<?php echo($class_id); ?>">
+                        <input type="text" readonly class="form-control-plaintext" id="className" value="<?php echo($class_name); ?>">
+                    </div>            
+                </div>
+
+                <div class="form-group row">
+                    <label for="classDesc" class="col-sm-4 col-form-label">คำอธิบายรายวิชา</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control-plaintext" readonly name="classDesc" id="lassDesc" rows="3" value="" style="border: 1px solid black"><?php echo($class_desc); ?></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label">คะแนนที่ต้องการ</label>          
+                </div>
+
+                <!-- VAK SCORE -->
+                <!-- ถ้าไม่ต้องการก็จะ display:none -->
+                
+                <div>
+                    <div class="form-group row" style="<?php if($v_req == 0){echo("display:none");} ?>">
+                        <div class="col-sm-1"></div>
+                        <label for="v_score" class="col-sm-3 col-form-label">คะแนน V</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly class="form-control-plaintext" id="v_score" value="<?php echo($v); ?>">
+                        </div>            
+                    </div>
+    
+                    <div class="form-group row" style="<?php if($a_req == 0){echo("display:none");} ?>">
+                        <div class="col-sm-1"></div>
+                        <label for="a_score" class="col-sm-3 col-form-label">คะแนน A</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly class="form-control-plaintext" id="a_score" value="<?php echo($a); ?>">
+                        </div>            
+                    </div>
+    
+                    <div class="form-group row" style="<?php if($k_req == 0){echo("display:none");} ?>">
+                        <div class="col-sm-1"></div>
+                        <label for="k_score" class="col-sm-3 col-form-label">คะแนน K</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly class="form-control-plaintext" id="k_score" value="<?php echo($k); ?>">
+                        </div>            
+                    </div>
+                </div>
+               
+               <!-- สร้าง FORM สำหรับกรอกข้อมูลคะแนนรายวิชาที่ต้องการ -->
+                <?php
+                    for($i=0; $i<count($subject_req); $i++){
+                        echo("<div class='form-group-row'>");
+                        echo("<label class='col-sm-4 col-form-label' name='subject'>คะแนนวิชา {$subject_req[$i]}</label>");
+                        echo("<input type='hidden' name='subject' value='{$subject_req[$i]}'>");
+                        echo("<input class='col-sm-4 col-form-input' name='score'  type='number' min='0' max='4' id='reqScore{$i}'>");
+                        echo("</div>");
+                    }
+                ?>
+                
+                <div class="text-center">
+                    <!--<input class="btn btn-primary" type="submit" value="ยืนยัน">-->
+                    <span class="btn btn-primary" id="submit">Submit</span>
+                </div>
+            
+            </form>
+        </div>
+        <hr>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+
+                /*Function checkValue
+                * ใช้สำหรับ check ค่าว่า มากกว่า4 หรือ น้อยกว่า 0 หรือไม่
+                */
+                const checkValue = (v) => {
+                    if(v > 4 || v<0 ){
+                        alert("คะแนนต้องอยู่ระหว่าง 0.00 - 4.00 เท่านั้น");
+                        return false
+                    }
+                    alert(typeof v);
+                    if(Number.isInteger(v)){
+                        alert("f")
+                    }
+                }
+
+                $("#submit").on("click", ()=>{
+                    let resultR;
+                    let email       = $("#email").val()
+                    let class_id    = $("#class_id").val();
+                    let subject     = [];
+                    let score       = [];
+                    let data        = {};
+    
+                    
+
+                    //Set Subject
+                    $("input[name='subject']").each(function() {
+                        subject.push(this.value)
+                    })
+
+                    //Set Score Value
+                    $("input[name='score']").each(function() {
+                        //resultR = checkValue(this.value);
+                        score.push(this.value);
+                    });
+
+                    data = {"class_id"  : class_id,
+                            "email"     : email,
+                            "subject"   : subject,
+                            "score"     : score}
+                    console.log(data)
+
+                    
+                })
+            });
+        </script>
 
     </div>
 
@@ -221,89 +251,3 @@
     </div>
 </body>
 </html>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        if($("#v_data").val() == 1) {
-            $("#v").attr("style", "display")
-        }
-
-        if($("#a_data").val() == 1) {
-            $("#a").attr("style", "display")
-        }
-
-        if($("#k_data").val() == 1) {
-            $("#k").attr("style", "display")
-        }
-
-        $("#submit").on("click",()=>{
-            let class_id = $("#classid").val()
-            let std_email = $("#stdemail").val()
-            let v, a, k;
-
-            //set vak score
-            if($("#v_data").val() == 1) {
-                v = $("#v_input").val();
-            } else {
-                v = 0
-            }
-
-            if($("#a_data").val() == 1) {
-                a = $("#a_input").val();
-            } else {
-                a = 0
-            }
-
-            if($("#k_data").val() == 1) {
-                k = $("#k_input").val();
-            } else [
-                k = 0
-            ]
-
-            //set ข้อมูลคะแนนรายวิชาที่ต้องผ่านก่อนหน้า โดย
-            //1. หาจำนวนรายวิชาที่ต้องผ่านทั้งหมด (nOfSubReq)
-            //2. สร้าง array (sReq) สำหรับเก็บข้อมูลคะแนนวิชาที่ต้องผ่าน
-            
-            let nOfSubReq = $("#nOfSubjectReq").val(); //จำนวนวิชาที่ต้องผ่าน
-            let sReq =[];
-            let i;
-            let testVal;
-            for(i = 1; i <= nOfSubReq; i++) {
-                if($("#sub"+i).val() == "") {
-                    alert("กรุณากรอกข้อมูลให้ครบ")
-                    return false
-                }
-                
-                sReq.push($("#sub"+i).val());
-            }
-            //alert(JSON.stringify(sReq))
-
-            //alert(nOfSubReq)
-            let d = {   "classid"       : class_id,
-                        "std_email"     : std_email,
-                        "v"             : v,
-                        "a"             : a,
-                        "k"             : k,
-                        "nOfScore"      : nOfSubReq,
-                        "scoreReq"      : sReq
-
-                    };
-            //let dumy = JSON.stringify(d)
-            console.log(d)
-            //alert(d['classid'])
-
-             $.ajax({
-                url: 'ajax_student_join_form.php',
-                type: 'post',
-                data: d,
-                success: function(result) {
-                    alert(result)
-                    window.location.replace("./student_join_class.php");
-                }
-            });
-
-
-        })
-    });
-</script>
-        
