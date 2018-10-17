@@ -43,6 +43,7 @@
         $k_req      = $classData['k'];
         
         print_r($classData);
+        echo("<br>");
         
 
         //ข้อมูล student
@@ -71,21 +72,8 @@
             //$row = $result->fetch_assoc();
             return $return;
         }
-        
-        
-        $stdRegis = checkWhoRegister($conn, $classid); //List ชื่อ และ Email นักเรียนที่มาลงทะเบียน
-        echo("<br>-------------<br>");
-        foreach($stdRegis as $v) {
-            print_r($v);
-            echo("<br>");
-        }
-        echo("<br>-------------<br>");
-        echo("{$stdRegis[0]['name']}<br>");
-        echo("{$stdRegis[1]['name']}<br>");
 
-
-
-        //----------get Score---------------
+        //----------get Score ถึงข้อมูลคะแนนของนักเรียนที่ต้องการ ตามที่ class require ไว้---------------
         function getScore($conn, $classid, $stdEmail) {
             $sql = "SELECT
                         class.title,
@@ -105,16 +93,44 @@
             //$row = $result->fetch_assoc();
             return $return;
         }
+        
 
-        $getScore = getScore($conn, $classid, 'std01@gmail.com');
-        echo("<br>-------------<br>");
-        foreach($getScore as $v) {
-            print_r($v);
+        //สร้าง Array ชุดข้อมูล stdData เพื่อใช้จัดกลุ่มข้อมูลว่านักเรียนคนไหน ได้คะแนนอะไรเท่าไหร่บ้าง
+        $stdData = [];
+        $myArr = [  "name"  => '',
+                    "v"     => '',
+                    "a"     => '',
+                    "k"     => '',
+                    "score" => []
+                 ];
+
+        $dbStd = checkWhoRegister($conn, $classid);
+        
+        for($i=0; $i<count($dbStd); $i++){
+
+            $myArr['name']  = $dbStd[$i]['name'];
+            $myArr['v']     = $dbStd[$i]['v'];
+            $myArr['a']     = $dbStd[$i]['a'];
+            $myArr['k']     = $dbStd[$i]['k'];
+
+            $dbScore = getScore($conn, $classid, $dbStd[$i]['email']);
+            for($j=0;$j<count($dbScore);$j++){
+                array_push($myArr['score'], $dbScore[$j]['score']);
+            }
+            
+            //print_r($myArr);
+            array_push($stdData, $myArr);
+            $myArr['score'] = [];
+            //echo("<br>");
+        }
+
+        echo("<br>");
+        for($i=0;$i<count($stdData); $i++) {
+            print_r($stdData[$i]);
             echo("<br>");
         }
-        echo("<br>-------------<br>");
-
-
+        
+        
         
         
     ?>
