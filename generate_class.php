@@ -117,18 +117,20 @@
             for($j=0;$j<count($dbScore);$j++){
                 array_push($myArr['score'], $dbScore[$j]['score']);
             }
-            
+
             //print_r($myArr);
             array_push($stdData, $myArr);
             $myArr['score'] = [];
             //echo("<br>");
         }
 
-        echo("<br>");
+        echo("<br>------stdData------<br>");
         for($i=0;$i<count($stdData); $i++) {
             print_r($stdData[$i]);
             echo("<br>");
         }
+        echo("<br>------------------<br>");
+        
         
         
         
@@ -149,6 +151,36 @@
             <p>Studen per group: <?php echo($perGroup); ?></p>
             <p>Total group: <?php echo($nStd/$perGroup) ?></p>
             <p>Student in class: </p>
+
+            <?php
+                //เก็บลง buffer พอได้โครงสร้างข้อมูลตามที่ต้องการ ก็เอาข้อมูลจาก buffer ไปใส่ group[$i]
+                //เสร็จแล้วก็ล้าง buffer เพื่อเตรียมเก็บข้อมูลสำหรับกลุ่มต่อไป
+                $group = array();
+                $buffer =array();
+                $n = count($stdData);
+                                
+                
+                for($i=0; $i<$n; $i++) { 
+
+                    array_push($buffer, $stdData[$i]);
+                    if($i%$perGroup ==1){
+                        array_push($group, $buffer);
+                        $buffer = [];
+                    }
+                }
+
+                echo("<br>------Result------<br>");
+                echo("N group : ". count($group). "<br>");
+                for($i=0; $i<(count($group));$i++){
+                    
+                    print_r($group[$i][0]);
+                    echo("<br>");
+                    print_r($group[$i][1]);
+                    echo("<br>");
+                    echo("<br>");
+                }
+                echo("<br>------------------<br>");
+            ?>
         </div>
 
     </div>
