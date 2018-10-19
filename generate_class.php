@@ -98,9 +98,9 @@
         //สร้าง Array ชุดข้อมูล stdData เพื่อใช้จัดกลุ่มข้อมูลว่านักเรียนคนไหน ได้คะแนนอะไรเท่าไหร่บ้าง
         $stdData = [];
         $myArr = [  "name"  => '',
-                    "v"     => '',
-                    "a"     => '',
-                    "k"     => '',
+                    //"v"     => '',
+                    //"a"     => '',
+                    //"k"     => '',
                     "score" => []
                  ];
 
@@ -109,12 +109,30 @@
         for($i=0; $i<count($dbStd); $i++){
 
             $myArr['name']  = $dbStd[$i]['name'];
-            $myArr['v']     = $dbStd[$i]['v'];
-            $myArr['a']     = $dbStd[$i]['a'];
-            $myArr['k']     = $dbStd[$i]['k'];
+            //$myArr['v']     = $dbStd[$i]['v'];
+            //$myArr['a']     = $dbStd[$i]['a'];
+            //$myArr['k']     = $dbStd[$i]['k'];
 
+            /*บันทึกคะแนน vak */
+            if($v_req == 1){
+                array_push($myArr['score'], $dbStd[$i]['v']);
+            }
+
+            if($a_req == 1){
+                array_push($myArr['score'], $dbStd[$i]['a']);
+            }
+
+            if($k_req == 1){
+                array_push($myArr['score'], $dbStd[$i]['k']);
+            }
+
+
+            /*----- บันทึกคะแนน vak ----- */
+            //select ค่าคะแนนที่ต้องการโดยอาศัย function getScore (return array)
             $dbScore = getScore($conn, $classid, $dbStd[$i]['email']);
-            for($j=0;$j<count($dbScore);$j++){
+
+            //เอาค่าที่ได้มาบันทึกลง $myArr
+            for($j=0; $j<count($dbScore); $j++){
                 array_push($myArr['score'], $dbScore[$j]['score']);
             }
 
@@ -127,13 +145,9 @@
         echo("<br>------stdData------<br>");
         for($i=0;$i<count($stdData); $i++) {
             print_r($stdData[$i]);
-            echo("<br>");
+            echo("<br>22");
         }
         echo("<br>------------------<br>");
-        
-        
-        
-        
         
     ?>
 
@@ -153,14 +167,14 @@
             <p>Student in class: </p>
 
             <?php
+                echo("<br>------Grouping Result------<br>");
                 //เก็บลง buffer พอได้โครงสร้างข้อมูลตามที่ต้องการ ก็เอาข้อมูลจาก buffer ไปใส่ group[$i]
                 //เสร็จแล้วก็ล้าง buffer เพื่อเตรียมเก็บข้อมูลสำหรับกลุ่มต่อไป
-                $group = array();
-                $buffer =array();
-                $n = count($stdData);
-                                
+                $group = [];
+                $buffer = array();
+                //$n = count($stdData);      
                 
-                for($i=0; $i<$n; $i++) { 
+                for($i=0; $i<count($stdData); $i++) { 
 
                     array_push($buffer, $stdData[$i]);
                     if($i%$perGroup ==1){
@@ -168,18 +182,59 @@
                         $buffer = [];
                     }
                 }
-
-                echo("<br>------Result------<br>");
+                
                 echo("N group : ". count($group). "<br>");
                 for($i=0; $i<(count($group));$i++){
                     
-                    print_r($group[$i][0]);
+                    echo("Group {$i} : ");
+                    //print_r($group[$i]);
+                    print_r($group[$i][0]['score']);
                     echo("<br>");
-                    print_r($group[$i][1]);
-                    echo("<br>");
+                    echo("Group {$i} : ");
+                    print_r($group[$i][1]['score']);
                     echo("<br>");
                 }
-                echo("<br>------------------<br>");
+                echo("<br>------Grouping Result------<br>");
+
+                //$group[กลุ่มที่][คนที่][field'score'][ลำดับคะแนนที่]
+                //$group[$i][$k]['score'][$j]
+
+                $nScore = count($group[0][0]['score']);     //จำนวนแถวของคะแนน
+                $nGroup = count($group);                    //จำนวนกลุ่มทั้งหมด
+
+                for($i=0; $i<$nGroup;$i++){
+                    
+                    for($j=0; $j<$nScore; $j++) {
+                        for( $k=0; $k<(count($group[$i])); $k++){
+                            echo("{$group[$i][$k]['score'][$j]} | ");
+                        }
+                        echo("<br>");
+                        
+                    }
+                    echo("<br>------Grouping Result------<br>");
+                }
+
+                //echo(count($group[0][0]['score']));
+                //echo(($group[0][0]['score'][0]));
+                //echo("<br>");
+
+                
+                
+                //$sumScore = [];             //ผลรวมคะแนนในแต่รอบเพื่อเตรียมเอาไปหาค่าเฉลี่ยน
+                //$avg;                       //ค่าเฉลี่ย
+                //echo("<br>------------------<br>");
+                //echo("nGroup: ". count($group));
+                //echo("<br>------------------<br>");
+                //$avg = [];
+              
+                echo(json_encode($group[0]));
+
+                //print_r($group[0]);
+
+                //เก็บค่าคะแนนลง array $calScore เพื่อเตรียมเอาไปหาค่าเฉลี่ย
+                
+
+
             ?>
         </div>
 
