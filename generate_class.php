@@ -26,7 +26,7 @@
     <?php include('./layouts/menu.php'); ?>
 
     <?php
-        $classid = "class1";
+        $classid = "class3";
 
         //จำนวนคนลงทะเบียน
         $nStdSQL = mysqli_query($conn, "SELECT std_email FROM student_score WHERE class_id = '{$classid}' GROUP BY std_email");
@@ -167,71 +167,128 @@
             <p>Student in class: </p>
 
             <?php
-                echo("<br>------Grouping Result------<br>");
+                echo("<br>------Grouping Result : จัดกลุ่ม------<br>");
                 //เก็บลง buffer พอได้โครงสร้างข้อมูลตามที่ต้องการ ก็เอาข้อมูลจาก buffer ไปใส่ group[$i]
                 //เสร็จแล้วก็ล้าง buffer เพื่อเตรียมเก็บข้อมูลสำหรับกลุ่มต่อไป
                 $group = [];
                 $buffer = array();
-                //$n = count($stdData);      
-                
-                for($i=0; $i<count($stdData); $i++) { 
+                //$n = count($stdData); 
 
+                for($i=0; $i<count($stdData); $i++) { 
                     array_push($buffer, $stdData[$i]);
-                    if($i%$perGroup ==1){
+                    if( (($i+1) % $perGroup == 0) && ($i != 0)) {
                         array_push($group, $buffer);
                         $buffer = [];
                     }
                 }
                 
                 echo("N group : ". count($group). "<br>");
+
                 for($i=0; $i<(count($group));$i++){
-                    
-                    echo("Group {$i} : ");
+                    echo("{$i} : ");
+                    echo(json_encode($group[$i]));
                     //print_r($group[$i]);
-                    print_r($group[$i][0]['score']);
                     echo("<br>");
-                    echo("Group {$i} : ");
-                    print_r($group[$i][1]['score']);
+                    echo("----------");
                     echo("<br>");
                 }
-                echo("<br>------Grouping Result------<br>");
+
+                /*---------------------------------------------------* */
+                echo("<br>------ หาค่าเฉลี่ยของแต่ละวิชา ในแต่ละกลุ่ม------<br>");
+                echo("เช่น กลุ่มที่ 1 มี 4คน คนที่1 คะแนน[7, 3, 2.0] | คนที่2 คะแนน[7, 5, 3.0] | คนที่3 คะแนน[8, 1, 4.0] | คนที่4 คะแนน[9, 2, 4.0] <br>");
+
 
                 //$group[กลุ่มที่][คนที่][field'score'][ลำดับคะแนนที่]
                 //$group[$i][$k]['score'][$j]
 
                 $nScore = count($group[0][0]['score']);     //จำนวนแถวของคะแนน
                 $nGroup = count($group);                    //จำนวนกลุ่มทั้งหมด
+                $bufferScore = 0;       //ตัวแปรเก็บข้อมูลคะแนนเพื่อเตรียมเอาไปหาค่าเฉลี่ย
+                $bufferAvg = [];        //ตัวแปรเก็บข้อมูลคะแนนเฉลี่ย เพื่อเตรียมเอาไปบันทึกลง $dataAvg
+                $dataAvg = [];          //ตัวแปรเก็บข้อมูลคะแนนเฉลี่ย โดยแบ่งเป็นกลุ่ม
 
+                //วนรอบตามจำนวนกลุ่ม
                 for($i=0; $i<$nGroup;$i++){
-                    
+                    echo("<b>Group :</b> {$i} <br>");
+                    //วนรอบตามจำนวนคะแนน
                     for($j=0; $j<$nScore; $j++) {
+                        //วนรอบตามจำนวนคน
+                        echo("<b>คะแนนวิชาตำแหน่งที่ :</b> {$j} <br>");
                         for( $k=0; $k<(count($group[$i])); $k++){
+                            //เอาคะแนนวิชา[$j]ของคนในกลุ่มมารวมกัน
+                            $bufferScore += $group[$i][$k]['score'][$j];
+                            
                             echo("{$group[$i][$k]['score'][$j]} | ");
                         }
+                        //เอาค่าเฉลี่ยของคะแนน[$j] ของคนในกลุ่มมาเก็บไว้ในตัวแปร $bufferAvg
+                        array_push($bufferAvg, $bufferScore / count($group[$i]));
                         echo("<br>");
+                        echo("sumScore in group : {$bufferScore} <br>");
                         
+                        //echo("Average score is : {$bufferAvg}");
+                        echo("array เก็บข้อมูลค่าเฉลี่ย : ". json_encode($bufferAvg));
+                        //Clear bufferScore
+                        $bufferScore = 0;
+                        echo("<br><br>");
+                        //ผลลัพธ์ที่ได้หลังวน loop เสร็จ คือ array ค่าเฉลี่ยของแต่ละวิชาในกลุ่ม
+                        //Array ( [0] => 7.5 [1] => 10 [2] => 3.25 [3] => 3.25 ) 
                     }
-                    echo("<br>------Grouping Result------<br>");
+                    //push array ค่าเฉลี่ยคะแนนของแต่ละวิชาลงโดย $dataAvg โดยแยกเป็นกลุ่ม
+                    //ตัวอย่าง ข้อมูลที่ได้ [[7.5,10,3.25,3.25],[5,10,3.25,2.5]]
+                    array_push($dataAvg, $bufferAvg);
+                    $bufferAvg = [];
+                    echo("<br>------------<br>");
                 }
 
-                //echo(count($group[0][0]['score']));
-                //echo(($group[0][0]['score'][0]));
-                //echo("<br>");
-
+                echo("array เก็บข้อมูลค่าเฉลี่ยของแต่ละวิชา แยกตามกลุ่ม : " . json_encode($dataAvg) . "<br><br>");
                 
-                
-                //$sumScore = [];             //ผลรวมคะแนนในแต่รอบเพื่อเตรียมเอาไปหาค่าเฉลี่ยน
-                //$avg;                       //ค่าเฉลี่ย
-                //echo("<br>------------------<br>");
-                //echo("nGroup: ". count($group));
-                //echo("<br>------------------<br>");
-                //$avg = [];
-              
-                echo(json_encode($group[0]));
+                /**--------------------------------- */
+                function generateScore($data) {
+                    //$data[กลุ่มที่][คะแนนที่]
+                    echo(json_encode($data));
 
-                //print_r($group[0]);
+                    $nScore = count($data[0]);
+                    $nGroup = count($data);
+                    echo("<br>----จำนวนกลุ่ม : {$nGroup} กลุ่ม----<br>");
+                    $sumPow = 0;        //สำหรับเก็บผลลัพธ์การเปรียบเทียบคะแนน และนำไปยกกำลัง
+                    $bufferPow = [];    //สำหรับเก็บ stack ผลลัพธ์ของเลขยกกำลัง เพื่อเตรียมเอาไป sqrt ต่อไป
+                    $scoreGen = 0;      //สำหรับเก็บผลลัพธ์การ sqrt ทุกรอบ และสุดท้ายจะเป็นคำตอบของสมการ
+                    echo("[0][0]-[1][0] | [0][1]-[1][1] | [0][2]-[1][2] <br>");
+                    echo("[0][0]-[2][0] | [0][1]-[2][1] | [0][2]-[2][2] <br>");
+                    echo("[1][0]-[2][0] | [1][1]-[2][1] | [1][2]-[2][2] <br>");
+                    echo("<br><br>");
+                    
+                    // ----- Calculate Algo -----
+                    for($i=0; $i<$nGroup-1; $i++) {
+                        //echo("i <br>");
+                        for($j=1; $j<$nGroup; $j++) {
+                            for($k=0; $k<$nScore; $k++) {
+                                if(!($i>=$j) && ($k==$k)) {
+                                    //echo("[{$i}][{$k}] - [{$j}][{$k}] | ");
+                                    $sumPow = pow(($data[$i][$k] - $data[$j][$k]), 2);
+                                    array_push($bufferPow, $sumPow);
+                                    echo("{$sumPow}<br>");
+                                }                   
+                            }
+                            if(!($i==$j) ) {
+                                echo("----<br>");
+                                $scoreGen += sqrt(array_sum($bufferPow));
+                                echo(json_encode($bufferPow));
+                                echo("<br>----<br>");
+                                $bufferPow = [];
+                            }   
+                        }
+                    }
+                    // ----- Calculate Algo -----
+                    echo("<br>-------------<br>");
+                    echo($scoreGen);
+                    
+                    
+                    echo("<br>-------------<br>");
 
-                //เก็บค่าคะแนนลง array $calScore เพื่อเตรียมเอาไปหาค่าเฉลี่ย
+                }
+                echo("<br>-----Generate Score-----<br>");
+                generateScore($dataAvg)
                 
 
 
