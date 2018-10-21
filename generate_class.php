@@ -12,6 +12,12 @@
     <?php
         include("./layouts/meta.php");
     ?>
+
+    <?php
+        if(isset($_POST)) {
+            print_r($_POST);
+        }
+    ?>
     <!--
     
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -26,7 +32,7 @@
     <?php include('./layouts/menu.php'); ?>
 
     <?php
-        $classid = "class1";
+        $classid = $_POST['classid'];
 
         //จำนวนคนลงทะเบียน
         $nStdSQL = mysqli_query($conn, "SELECT std_email FROM student_score WHERE class_id = '{$classid}' GROUP BY std_email");
@@ -296,7 +302,7 @@
         </div>
 
     </div>
-       
+
     <!-- Footer -->
     <div>
         Footer

@@ -11,7 +11,7 @@
 </div>
 <div style="border: 1px solid black">
     <a href="http://localhost/zontal/student_join_class.php">Student join class</a>|
-    <a href="http://localhost/zontal/generate_class.php">Generate</a>|
+    <a href="http://localhost/zontal/generate.php">Generate</a>|
     <!--<a href="http://localhost/zontal/class_search.php">Class Search</a>|-->
     
 </div>
