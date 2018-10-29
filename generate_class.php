@@ -13,10 +13,20 @@
         include("./layouts/meta.php");
     ?>
 
+    <!-- Check permission access -->
     <?php
-        if(isset($_POST)) {
-            print_r($_POST);
-        }
+    
+    //ถ้าไม่ได้ login
+    if(!isset($_SESSION)) {
+        header("Location: http://{$url}");
+        die();
+    }
+    
+    //ถ้าไม่ใช้ Teacher
+    if($_SESSION['permission'] != 2) {
+        header("Location: http://{$url}");
+        die();
+    }
     ?>
     <!--
     

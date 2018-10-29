@@ -14,9 +14,36 @@
     ?>
 
     <?php
+        //ตรวจว่ามีการ Login มาหรือยัง
         if(isset($_SESSION) && isset($_SESSION['email'])) {
             header("Location: http://{$url}");
             die();
+        }
+    
+        //จัดการ การ Login
+        if($method == "POST") {
+            if(isset($_POST['email']) && isset($_POST['password'])) {
+                $email      = $_POST['email'];
+                $password   = $_POST['password'];
+
+                //สร้างคำสั่ง SQL เพื่อใช้ตรวจสอบการ Login
+                $sql = "SELECT * FROM users WHERE email = '{$email}' and password = '{$password}'";
+
+                $result = mysqli_query($conn, $sql);
+
+                if(!(mysqli_num_rows($result) > 0)) {
+                    echo "Login fail";
+                
+                } else {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $name = $row["name"];
+                        $_SESSION['email']          = $email;
+                        $_SESSION['permission']     = $row['p_id'];
+                    }
+                    header("Location: http://{$url}");
+
+                }          
+            }
         }
     ?>
     <!--
@@ -72,47 +99,3 @@
 </body>
 </html>
 
-<?php
-    
-    if($method == "POST") 
-    {
-        if(isset($_POST['email']) && isset($_POST['password']))
-        {
-            $email      = $_POST['email'];
-            $password   = $_POST['password'];
-
-            //สร้างคำสั่ง SQL เพื่อใช้ตรวจสอบการ Login
-            $sql = "SELECT * FROM users WHERE email = '{$email}' and password = '{$password}'";
-
-            $result = mysqli_query($conn, $sql);
-
-            if(!(mysqli_num_rows($result) > 0)) {
-                echo "Login fail";
-               
-            } else {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $name = $row["name"];
-                    //echo("$name");
-                    //echo($row['p_id']);
-                    $_SESSION['email']          = $email;
-                    $_SESSION['permission']     = $row['p_id'];
-
-                    //echo $permission;
-                    //$_SESSION['userid'] = $userid;
-                    //$_SESSION['permission'] = $permission;
-                    //setcookie('userid', $userid, time()+60*15);
-                    //echo "{$_SESSION['userid']} <br>";
-                    //echo "{$_SESSION['permission']} <br>";
-                    //echo "{$_COOKIE['userid']} <br>";
-                    header("Location: http://{$url}");
-                    die();
-                }  
-            }
-        }
-        
-        
-    }
-    
-
-    
-?>
