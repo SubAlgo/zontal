@@ -15,12 +15,16 @@
     <?php
         include("./layouts/meta.php");
     ?>
-    http://localhost/zontal/student_daskboard.php
 
     <?php
         if(isset($_SESSION['permission'])) {
+            if($_SESSION['permission'] == 2) {
+                header("Location: http://{$url}/teacher_dashboard.php");
+                die();
+            }
+
             if($_SESSION['permission'] == 3) {
-                header("Location: http://{$url}/student_daskboard.php");
+                header("Location: http://{$url}/student_dashboard.php");
                 die();
             }
         }

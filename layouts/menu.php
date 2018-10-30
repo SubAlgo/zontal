@@ -17,11 +17,12 @@
 
     }
 </style>
+<!--
 <div style="border: 1px solid black; background-color:#3d3c3c">
     <a href="http://localhost/zontal/">Home</a>|
     <a href="http://localhost/zontal/student_register.php">Student_Register</a>|
     <a href="http://localhost/zontal/teacher_register.php">Teacher_Register</a>|
-    <!--<a href="http://localhost/zontal/group_create.php">Create_Group</a>| Create_Setting -->
+    <a href="http://localhost/zontal/group_create.php">Create_Group</a>| Create_Setting 
     <a href="http://localhost/zontal/group_setting.php">Create_Group</a>|
     <a href="http://localhost/zontal/vaktest.php">VAK Test</a>|
     
@@ -31,7 +32,8 @@
 <div style="border: 1px solid black; background-color:#3d3c3c">
     <a href="http://localhost/zontal/student_join_class.php">Student join class</a>|
     <a href="http://localhost/zontal/generate.php">Generate</a>|
-    <!--<a href="http://localhost/zontal/class_search.php">Class Search</a>|-->
+    <a href="http://localhost/zontal/class_search.php">Class Search</a>|
+-->
     
 </div>
 
