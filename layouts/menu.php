@@ -53,6 +53,7 @@
         if($_SESSION['permission'] == 2) {
             echo("<a href='http://localhost/zontal/'>Teacher Daskboard</a> | ");
             echo("<a href='http://localhost/zontal/group_setting.php'>Create_Group</a> | ");
+            echo("<a href='http://localhost/zontal/generate.php'>Generate</a> | ");
             echo("<a href='http://localhost/zontal/logout.php'>Logout</a>");
         }
 
