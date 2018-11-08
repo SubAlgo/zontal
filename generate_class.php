@@ -227,6 +227,33 @@
             return $scoreGen;
         }
 
+        //function random Index
+        function randIndex($n) {
+            /**
+             * สร้างตัวแปร val[] สำหรับเก็บค่าการ random
+             * โดยค่าที่จะเก็บเข้า array คือ ค่าที่ไม่ซ้ำกับที่มีอยู่ใน array
+             * จำนวนการวนรอบ เท่ากับ จำนวนสมาชิกที่ลงทะเบียนใน class
+             */
+            $val = [];
+            while(count($val)<$n) {
+                $r = mt_rand(0,$n-1);
+                if(!in_array($r, $val)) {
+                    array_push($val, $r);
+                }
+            }
+            //echo(json_encode($val)."<br>");
+            return $val;
+        }
+
+        //function Random ตำแหน่งข้อมูลนักศึกษา
+        function createRandomData($studentData, $rIndex) {
+            $rData = [];
+            for($i=0; $i<count($studentData); $i++) {
+                $rData[$i] = $studentData[$rIndex[$i]];
+            }
+            return $rData;
+        }
+
 
     ?>
 
@@ -241,14 +268,32 @@
         $perGroup   = $classData['pergroup'];
 
         $nStudent   = getTotalStudent($conn, $classid);
-        $studentData = getStudentData($conn, $classid,$v_req, $a_req, $k_req );
-    
-        $group      = createGroup($studentData, $perGroup);    
+        $studentData = getStudentData($conn, $classid,$v_req, $a_req, $k_req );     //source หลักข้อมูลนักศึกษา
+        
+        //Random
+        $rIndex = randIndex($nStudent);     //Create random index
+        $rData = createRandomData($studentData, $rIndex);   //random ตำแหน่งข้อมูลนักศึกษา
+        
+      
+
+        $group          = createGroup($studentData, $perGroup);
+        $groupRandom    = createGroup($rData, $perGroup);   
 
         $nScore     = count($group[0][0]['score']);
         $nGroup     = $nStudent / $perGroup;
         
         $generateScore = 0; //กำหนดค่าเริ่มต้นของ generate score
+
+        
+
+        echo("createRandomData<br>");
+        echo("ค่า random Index <br>".json_encode($rIndex). "<br>");
+        
+        
+        foreach($rData as $value) {
+            echo(json_encode($value)."<br>");
+        }
+        echo("<br>");
 
     ?>
 
@@ -310,7 +355,7 @@
             </div>
             
             <hr>
-            <div class="row">
+            <div class="row" style="border: 1px solid black;">
                 <div class="col-md-6">
                 <?php
                     for($i=0; $i<($nGroup);$i++){
@@ -336,6 +381,47 @@
                 </div>
             
             </div>
+                    
+            <!--********แสดงผลลัพธ์การ Random*********
+            *                                       *
+            *           แสดงผลลัพธ์การ Random        *
+            *                                       *
+            **************************************-->
+            <div class="row" style="border: 1px solid black;">
+                <div class="col-md-6">
+                <?php
+                    $xx = [];/**** */
+                    $xx[0] = $groupRandom;
+                    for($i=0; $i<($nGroup);$i++){
+                        $n = $i + 1;
+                        echo("<b>สมาชิกกลุ่ม [{$n}] </b>: <br>");
+                        //echo(json_encode($group[$i]));
+                        //foreach($groupRandom[$i] as $value) {
+                        foreach($xx[0][$i] as $value) {
+                            echo("<ul>");
+                            echo("<li>");
+                            echo("  ชื่อ    ". json_encode($value['name']));
+                            echo("  คะแนน  ". json_encode($value['score']));
+                            echo("</li>");
+                            echo("</ul>");
+                        }
+                    }
+                ?>
+                </div>
+
+                <div class="col-md-6">
+                <?php
+                    $generateScore = generateScore($groupRandom);
+                    echo("<b>ผลลัพธ์การ Generate score</b> : ". $generateScore);
+                ?>
+                </div>
+            
+            </div>
+            <!--********แสดงผลลัพธ์การ Random*********
+            *                                       *
+            *           แสดงผลลัพธ์การ Random        *
+            *                                       *
+            **************************************-->
             
         
         </div>
