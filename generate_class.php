@@ -254,12 +254,25 @@
             return $rData;
         }
 
+        //function RandomGroup
+        function createRandomGroup($studentData, $perGroup) {
+            $rIndex = randIndex(count($studentData));
+            $rData = createRandomData($studentData, $rIndex);
+            $groupRandom = createGroup($rData, $perGroup);
+
+            //echo(json_encode($groupRandom));
+            return $groupRandom;
+        }
+        
+
 
     ?>
 
     <?php
         /* ----- DATA -----*/
         $classid = $_POST['classid'];
+        //จำนวนรอบการ random
+        $loopRandom = $_POST['loop'];;
         
         $classData  = getClassData($conn, $classid);
         $v_req      = $classData['v'];
@@ -269,31 +282,42 @@
 
         $nStudent   = getTotalStudent($conn, $classid);
         $studentData = getStudentData($conn, $classid,$v_req, $a_req, $k_req );     //source หลักข้อมูลนักศึกษา
+        //จำนวนกลุ่มทั้งหมด
+        $nGroup     = $nStudent / $perGroup;
         
-        //Random
-        $rIndex = randIndex($nStudent);     //Create random index
-        $rData = createRandomData($studentData, $rIndex);   //random ตำแหน่งข้อมูลนักศึกษา
+        /********************
+        *                   * 
+        *   Randomdata      *
+        *                   * 
+        ********************/
         
-      
-
+        //random index ใช้สำหรับจัดเรียงข้อมูลตำแหน่ง
+        $rIndex = randIndex($nStudent);
+        //random data เป็น list ข้อมูลนักศึกษาที่ได้จากการจัดเรียงตามค่า randomIndex
+        $rData = createRandomData($studentData, $rIndex);
+        //ผลลัพธ์การจัดกลุ่มนักศึกษาก่อนที่จะมีการ random
         $group          = createGroup($studentData, $perGroup);
         $groupRandom    = createGroup($rData, $perGroup);   
 
-        $nScore     = count($group[0][0]['score']);
-        $nGroup     = $nStudent / $perGroup;
+        
         
         $generateScore = 0; //กำหนดค่าเริ่มต้นของ generate score
 
+        //echo("<br>********<br>");
+        //$dx = createRandomGroup($studentData, $perGroup);
+        //foreach($dx as $value) {
+        //    echo(json_encode($value). "<br>");
+        //}
+        //echo("<br>********<br>");
+//
+        //echo("createRandomData<br>");
+        //echo("ค่า random Index <br>".json_encode($rIndex). "<br>");
         
-
-        echo("createRandomData<br>");
-        echo("ค่า random Index <br>".json_encode($rIndex). "<br>");
         
-        
-        foreach($rData as $value) {
-            echo(json_encode($value)."<br>");
-        }
-        echo("<br>");
+        //foreach($rData as $value) {
+        //    echo(json_encode($value)."<br>");
+        //}
+        //echo("<br>");
 
     ?>
 
@@ -387,36 +411,76 @@
             *           แสดงผลลัพธ์การ Random        *
             *                                       *
             **************************************-->
-            <div class="row" style="border: 1px solid black;">
-                <div class="col-md-6">
-                <?php
-                    $xx = [];/**** */
-                    $xx[0] = $groupRandom;
-                    for($i=0; $i<($nGroup);$i++){
-                        $n = $i + 1;
-                        echo("<b>สมาชิกกลุ่ม [{$n}] </b>: <br>");
-                        //echo(json_encode($group[$i]));
-                        //foreach($groupRandom[$i] as $value) {
-                        foreach($xx[0][$i] as $value) {
-                            echo("<ul>");
-                            echo("<li>");
-                            echo("  ชื่อ    ". json_encode($value['name']));
-                            echo("  คะแนน  ". json_encode($value['score']));
-                            echo("</li>");
-                            echo("</ul>");
-                        }
-                    }
-                ?>
-                </div>
+            <?php
+                //createRandomGroup($studentData, $perGroup);
+                
+                $obj = [];
+                //สร้างข้อมูลที่ได้จากการ random ตามจำนวนรอบการ random ที่กำหนด
+                for($i=0; $i<$loopRandom; $i++) {
+                    $obj[$i] = createRandomGroup($studentData, $perGroup);
+                }
 
-                <div class="col-md-6">
-                <?php
-                    $generateScore = generateScore($groupRandom);
-                    echo("<b>ผลลัพธ์การ Generate score</b> : ". $generateScore);
-                ?>
-                </div>
+                for($i=0; $i<count($obj); $i++) {
+                    echo("<div class='row' style='border: 1px solid black;'>");
+                        echo("<div class='col-md-6'>");
+                        echo("<b>random รอบที่: {$i} </b><br>");
+                        for($j=0; $j<$nGroup;$j++) {
+                            $n = $j+1;
+                            echo("<b>สมาชิกกลุ่มที่ [ {$n} ] </b>: <br>");
+                            foreach($obj[$i][$j] as $value) {
+                                echo("<ul>");
+                                echo("<li>");
+                                echo("  ชื่อ    ". json_encode($value['name']));
+                                echo("  คะแนน  ". json_encode($value['score']));
+                                echo("</li>");
+                                echo("</ul>");
+                            }
+
+                        }
+                        echo("</div>");
+                        echo("<div class='col-md-6'>");
+                       
+                            $gScore = generateScore($obj[$i]);
+                            echo("<b>ผลลัพธ์การ Generate score</b> : ". $gScore);
+                        
+                        echo("</div>");
+                    echo("</div>");
+                }
+            ?>
+
+            <?php 
+                //$xx = [];/**** */
+                //$xx[0] = $groupRandom;
+                //$xx[1] = $groupRandom;
+//
+                //for($i=0; $i<count($xx); $i++) {
+                //    echo("<div class='row' style='border: 1px solid black;'>");
+                //        echo("<div class='col-md-6'>");
+                //        echo("รอบที่ {$i} <br>");
+                //        for($j=0; $j<$nGroup;$j++) {
+                //            $n = $j+1;
+                //            echo("<b>สมาชิกกลุ่ม [ {$n} ] </b>: <br>");
+                //            foreach($xx[$i][$j] as $value) {
+                //                echo("<ul>");
+                //                echo("<li>");
+                //                echo("  ชื่อ    ". json_encode($value['name']));
+                //                echo("  คะแนน  ". json_encode($value['score']));
+                //                echo("</li>");
+                //                echo("</ul>");
+                //            }
+//
+                //        }
+                //        echo("</div>");
+                //        echo("<div class='col-md-6'>");
+                //        
+                //        $generateScore = generateScore($groupRandom);
+                //        echo("<b>ผลลัพธ์การ Generate score</b> : ". $generateScore);
+                //        
+                //        echo("</div>");
+                //    echo("</div>");
+                //}
+            ?>
             
-            </div>
             <!--********แสดงผลลัพธ์การ Random*********
             *                                       *
             *           แสดงผลลัพธ์การ Random        *

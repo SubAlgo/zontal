@@ -30,9 +30,11 @@
     <div class="container text-center" style="border: 1px solid black; padding: 20px 5px 20px 5px;">
         <form action="generate_class.php" method="post">
             <div class="row">
-                <div class="col-md-4">กรอก id class</div>
-                <div class="col-md-4"><input type="text" name="classid" id="classid"></div>
-                <div class="col-md-4"><input class="btn btn-primary" type="submit" value="ยืนยัน"></div>
+                <div class="col-md-2">กรอก id class</div>
+                <div class="col-md-3"><input type="text" name="classid" id="classid" placeholder="class id"></div>
+                <div class="col-md-3">กรอก จำนวนรอบการ random</div>
+                <div class="col-md-2"><input type="text" name="loop" id="loop" placeholder="รอบการ random"></div>
+                <div class="col-md-2"><input class="btn btn-primary" type="submit" value="ยืนยัน"></div>
             </div>
             <div class="row text-center">
                 <div class="col-md-12">
