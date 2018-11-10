@@ -271,6 +271,22 @@
             }
             return $objRandomData;
         }
+
+        //********** สร้างค่า SCORE **********
+        //function setgenScore สำหรับ generate score เพื่อส่งไปเก็บใน array $genScore[] 
+        function setgenScore($objRandomData, $i) {
+            $genScore = generateScore($objRandomData[$i]);
+            return $genScore;
+        }
+
+        //สร้างข้อมูล $genScore[] ซึ่งเป็นข้อมูลผลลัพธ์การ generate ที่อยู่ในรูปแบบ array
+        function setArrayScore($loopRandom, $objRandomData) {
+            for($i=0; $i<$loopRandom; $i++) {
+                $genScore[$i] = setgenScore($objRandomData, $i);
+            }
+            return $genScore;
+        }
+        //********** สร้างค่า SCORE **********
         
 
 
@@ -318,7 +334,10 @@
         *******************************************************************/
         $objRandomData =  createObjRandomData($studentData, $perGroup, $loopRandom);
         
-
+        //ผลลัพธ์ของการ generate ที่อยู่ในรูปแบบ array เพื่อให้พร้อมในการนำไปวน loop แสดงผล
+        $genScore = setArrayScore($loopRandom, $objRandomData);
+        
+        
         /* ----- DATA -----*/
     ?>
 
@@ -415,7 +434,7 @@
             <?php
                 //createRandomGroup($studentData, $perGroup);
                 
-                for($i=0; $i<count($objRandomData); $i++) {
+                for($i=0; $i<$loopRandom; $i++) {
                     echo("<div class='row' style='border: 1px solid black;'>");
                         echo("<div class='col-md-6'>");
                         echo("<b>random รอบที่: {$i} </b><br>");
@@ -433,12 +452,15 @@
                         }
                         echo("</div>");
                         echo("<div class='col-md-6'>");
-                       
-                            $gScore = generateScore($objRandomData[$i]);
-                            echo("<b>ผลลัพธ์การ Generate score</b> : ". $gScore);
+                            echo("<b>ผลลัพธ์การ Generate score</b> : ". $genScore[$i]);
                         
                         echo("</div>");
                     echo("</div>");
+                }
+                
+                echo("<br>-----Test-------<br>");
+                foreach($genScore as $val) {
+                    echo("{$val} <br>");
                 }
             ?>
 
