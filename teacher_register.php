@@ -9,18 +9,22 @@
     //ต้อง login และเป็น Admin เท่านั้นถึงจะเข้ามาหน้านี้ได้
 
     //Check ว่า login มาหรือยัง
+    /*
     if(!isset($_SESSION['email']) && !isset($_SESSION['permission'])) {
         header("Location: http://{$url}");
         die();
     }
+    */
 
     //ถ้าไม่ใช้ admin ให้ redirect to homepage
+    /*
     if($_SESSION['permission'] != 1) {
         header("Location: http://{$url}");
         die();
     } else {
         echo "Hi admin";
     }
+    */
 ?>
 <head>
     <meta charset="UTF-8">
