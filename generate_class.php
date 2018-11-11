@@ -320,7 +320,12 @@
         /* ----- DATA -----*/
         $classid = $_POST['classid'];
         //จำนวนรอบการ random
-        $loopRandom = $_POST['loop'];;
+        $loopRandom = $_POST['loop'];
+
+        //percent จำนวนที่จะ select
+        $perSelect = $_POST['percentMin'];
+        //จำนวนค่า min ที่จะตัดมาใช้
+        $nSelect = round(($loopRandom * $perSelect)/100);
         
         $classData  = getClassData($conn, $classid);
         $v_req      = $classData['v'];
@@ -481,14 +486,6 @@
                         echo("</div>");
                     echo("</div>");
                 }
-                
-                echo("<br>-----Test-------<br>");
-                foreach($genScore as $val) {
-                    echo("{$val} <br>");
-                }
-                echo(json_encode($objRandomData[4]). "<br>");
-                echo($genScore[4]);
-
             ?>
             <!--********แสดงผลลัพธ์การ Random*********
             *                                       *
@@ -502,17 +499,24 @@
             *                                          *
             ******************************************-->
             <?php
-                $perSelect = 50;    //percent จำนวนที่จะ select
-                //จำนวนค่า min ที่จะตัดมาใช้
-                $nSelect = round(($loopRandom * $perSelect)/100);
+                echo("<br>----- เลือกชุดข้อมูลที่ Generate ได้คะแนนน้อยที่สุด -------<br>");
+                for($i=0; $i<count($genScore); $i++) {
+                    echo("<br>รูปแบบการ random ที่ [{$i}] " . json_encode($genScore[$i]));
+                }
+
+                
                 echo("<br>***********<br>");
                 echo("nSelect = " . $nSelect);
                 echo("<br>***********<br>");
                 $minIndexs = fineMinGenScoreIndex($genScore, $nSelect);
-                echo("<br>" . json_encode($minIndexs));
-                
+                echo("<br> รูปแบบการ random ที่ " . json_encode($minIndexs));
                 
 
+                foreach($minIndexs as $val) {
+                    echo("<br> score : " . json_encode($genScore[$val]));
+                    echo("<br> Data : ". json_encode($objRandomData[$val]));
+                    echo("<br> ------------");
+                }
             ?>
             
         
