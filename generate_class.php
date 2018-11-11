@@ -288,6 +288,30 @@
         }
         //********** สร้างค่า SCORE **********
         
+        //function สำหรับหา index ของค่าที่ต่ำที่สุดใน array
+        function fineMinGenScoreIndex($genScore, $nSelect) {
+            /**
+             * จุดประสงค์ เพื่อหา index ของค่า min ใน array ตามจำนวนที่ระบุ
+             * วิธีการ 
+             * 1 หาค่า max ใน array
+             * 2 หา index ของค่า min
+             * 3 เอาค่า index ที่ได้ไปเก็บไว้ใน array $minIndexs[]
+             * 4 แทนค่าข้อมูล min เดิมด้วย ค่า max  | $genScore[$minIndex] = $max;
+             * 
+             */
+            $minIndexs = [];
+            $max =  max($genScore);
+            //echo("<br>" . $max);
+            for($i=0; $i<$nSelect; $i++) {
+                $minIndex = array_keys($genScore, min($genScore));
+                $minIndex = $minIndex[0];
+                array_push($minIndexs, $minIndex);
+                $genScore[$minIndex] = $max;
+            }
+           // echo("<br>" . json_encode($minIndexs));
+            //echo("<br>" . json_encode($genScore));
+            return $minIndexs;
+        }
 
 
     ?>
@@ -462,15 +486,34 @@
                 foreach($genScore as $val) {
                     echo("{$val} <br>");
                 }
-            ?>
+                echo(json_encode($objRandomData[4]). "<br>");
+                echo($genScore[4]);
 
-           
-            
+            ?>
             <!--********แสดงผลลัพธ์การ Random*********
             *                                       *
             *           แสดงผลลัพธ์การ Random        *
             *                                       *
             **************************************-->
+
+            <!--******** Select score for shift*********
+            *                                          *
+            *           Select score for shift         *
+            *                                          *
+            ******************************************-->
+            <?php
+                $perSelect = 50;    //percent จำนวนที่จะ select
+                //จำนวนค่า min ที่จะตัดมาใช้
+                $nSelect = round(($loopRandom * $perSelect)/100);
+                echo("<br>***********<br>");
+                echo("nSelect = " . $nSelect);
+                echo("<br>***********<br>");
+                $minIndexs = fineMinGenScoreIndex($genScore, $nSelect);
+                echo("<br>" . json_encode($minIndexs));
+                
+                
+
+            ?>
             
         
         </div>
