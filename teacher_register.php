@@ -124,6 +124,13 @@
     {
         var pass = document.getElementById("password").value;
         var confirm = document.getElementById("confirm").value;
+        var id = document.getElementById("userid").value;
+
+        if(id[0] != "a") 
+        {
+            alert("กำหนด ID ไม่ถูกต้อง")
+            return false
+        }
         
         //Check ความยาว Password
         if(pass.length < 4) 
@@ -137,6 +144,9 @@
             alert('ยืนยัน Password ไม่ถูกต้อง')
             return false
         }
+
+        
+
     }
 </script>
 
