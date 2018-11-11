@@ -58,7 +58,7 @@
         }
 
         if($_SESSION['permission'] == 3) {
-            echo("<a href='http://localhost/zontal/student_daskboard.php'>Student Daskboard</a> | ");
+            echo("<a href='http://localhost/zontal/student_dashboard.php'>Student Dashboard</a> | ");
             echo("<a href='http://localhost/zontal/student_join_class.php'>join class</a> | ");
             echo("<a href='http://localhost/zontal/vaktest.php'>VAK Test</a> | ");
             echo("<a href='http://localhost/zontal/logout.php'>Logout</a>");
