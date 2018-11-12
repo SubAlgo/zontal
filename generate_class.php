@@ -578,7 +578,8 @@
                                 echo("<hr>");
                                 echo("<h4>Shift ข้อมูลผลการ Random ที่ [{$val}]</h4>");
                                 $bufferShift = $objRandomData[$val];
-                                for($i=0; $i<$nStudent; $i++) {
+                                //รอบมากกว่า $perGroup ก็ไม่มีประโยชน์แล้ว
+                                for($i=0; $i<$perGroup; $i++) {
                                     echo("<br>");
                                     $sho = $i+1;
                                     echo("<b>Generate Score Shift รอบที่ [" . $sho . "]  : </b>");
@@ -592,12 +593,9 @@
                                             echo(json_encode($y['name']));
                                         }
                                         echo("<br>");
-                                        
                                     }
                                     $scoreAfterShift = generateScore($bufferShift);
                                     echo("<b>score : </b> ". $scoreAfterShift);
-                                    
-                                    
                                 }
                                 
                                 //shiftData($minIndexs, $objRandomData[$val], $perGroup);
