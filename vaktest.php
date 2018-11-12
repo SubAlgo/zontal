@@ -173,14 +173,6 @@
                 </fieldset>
                 <hr size="10px">
 
-                <fieldset id="t6">
-                    <label>6. My very first memory is about</label><br>
-                    <input type="radio" value="1" name="t6" required>Something I saw<br>
-                    <input type="radio" value="2" name="t6">Something I did<br>
-                    <input type="radio" value="3" name="t6">Hearing a familiar voice<br>
-                </fieldset>
-                <hr size="10px">
-
                 <fieldset id="t7">
                     <label>7. When meeting someone new, my first impression is of</label><br>
                     <input type="radio" value="1" name="t7" required>What they say<br>
