@@ -366,6 +366,8 @@
         //ผลลัพธ์ของการ generate ที่อยู่ในรูปแบบ array เพื่อให้พร้อมในการนำไปวน loop แสดงผล
         $genScore = setArrayScore($loopRandom, $objRandomData);
         
+        $minIndexs = fineMinGenScoreIndex($genScore, $nSelect);
+        
         
         /* ----- DATA -----*/
     ?>
@@ -498,6 +500,32 @@
             *           Select score for shift         *
             *                                          *
             ******************************************-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <b>ชุดข้อมูลการจัดกลุ่มเบื้องต้นที่ได้ผลคะแนน Generate Score น้อยที่สุด <?php echo($nSelect); ?> อันดับ</b>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php
+                            echo("<div class='text-center'> ผลลัพธ์การ Random รอบที่ ". json_encode($minIndexs)  ."</div>")
+                        ?>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php
+                            foreach($minIndexs as $val) {
+                                echo("การ Random รอบที่ [". $val. "] ได้คะแนน : " . json_encode($genScore[$val]). "<br>");
+                            }
+                        ?>
+                    </div>
+                
+                </div>
+            </div>
             <?php
                 echo("<br>----- เลือกชุดข้อมูลที่ Generate ได้คะแนนน้อยที่สุด -------<br>");
                 for($i=0; $i<count($genScore); $i++) {
@@ -508,7 +536,7 @@
                 echo("<br>***********<br>");
                 echo("nSelect = " . $nSelect);
                 echo("<br>***********<br>");
-                $minIndexs = fineMinGenScoreIndex($genScore, $nSelect);
+                
                 echo("<br> รูปแบบการ random ที่ " . json_encode($minIndexs));
                 
 
@@ -517,6 +545,59 @@
                     echo("<br> Data : ". json_encode($objRandomData[$val]));
                     echo("<br> ------------");
                 }
+            ?>
+
+             <!--************* shift data ***************
+            *                                           *
+            *                  shift data               *
+            *                                           *
+            ******************************************-->
+            <?php 
+                echo("<br>------------ shiftData------------");
+                //shiftData($minIndexs, $objRandomData);
+                for($i=0; $i<count($minIndexs); $i++) {
+                    shiftData($minIndexs, $objRandomData[$minIndexs[$i]], $perGroup);
+                    echo("<br> ------------<br>");
+                    //shiftData($minIndexs, $objRandomData[$minIndexs[0]]);
+                }
+               
+
+                function shiftData($minIndexs, $objRandomData, $perGroup) {
+                                        
+                    //หาจำนวนกลุ่มที่ถูกแบ่ง
+                    $g = count($objRandomData);
+                    echo("g = ". $g . "<br>");
+                    $src = [];
+                    $shiftData = [];
+                    for($i=0; $i<$g; $i++) {
+                        $src = array_merge($src, $objRandomData[$i]);
+                    }
+                    
+                    //หาจำนวนสมาชิกทั้งหมดใน array
+                    $n = count($src);
+                    echo("n = ". $n . "<br>");
+                    
+                    //shift value
+                    for($i=0; $i<$n; $i++) {
+                        if($i == 0) {
+                            $shiftData[$i] = $src[$n-1];
+                        } else {
+                            $shiftData[$i] = $src[$i-1];
+                        }                        
+                    }
+
+                    echo(json_encode($src)."<br>");
+                    echo("<br>-----------------<br>");
+
+                    echo(json_encode($shiftData)."<br>");
+                    
+                    $dataScore = generateScore(createGroup($shiftData, $perGroup));
+                    echo("Score1 =". $dataScore."<br>");
+
+
+                }
+                
+
             ?>
             
         
