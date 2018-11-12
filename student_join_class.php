@@ -26,6 +26,38 @@
             die();
         }
     ?>
+
+    <?php
+        //echo($_SESSION['email']);
+        $checkVAK = checkVAKScore($_SESSION['email'], $conn);
+
+        if($checkVAK<=0) {
+            echo "<script>
+                    alert('There are no fields to generate a report');
+                    window.location.href='http://localhost/zontal/vaktest.php';
+                   </script>";
+        }
+
+
+        function checkVAKScore($email, $conn) {
+            $sql = "SELECT v,a,k FROM users WHERE email = '{$email}'";
+            $result = mysqli_query($conn, $sql);
+
+            if(!(mysqli_num_rows($result) > 0)) {
+                //echo "Login fail";
+            
+            } else {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $v = $row["v"];
+                    $a = $row['a'];
+                    $k = $row['k'];
+                }
+            }
+            $sum = $v + $a + $k;
+            //echo($sum);
+            return $sum;
+        }
+    ?>
     <!--
     
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
