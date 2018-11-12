@@ -87,6 +87,37 @@
 
     }
 ?>
+<?php
+        //echo($_SESSION['email']);
+        $checkVAK = checkVAKScore($_SESSION['email'], $conn);
+
+        if($checkVAK > 0) {
+            echo "<script>
+                    alert('คุณได้ทำการทดสอบเรียบร้อยแล้ว');
+                    window.location.href='http://localhost/zontal/';
+                   </script>";
+        }
+
+
+        function checkVAKScore($email, $conn) {
+            $sql = "SELECT v,a,k FROM users WHERE email = '{$email}'";
+            $result = mysqli_query($conn, $sql);
+
+            if(!(mysqli_num_rows($result) > 0)) {
+                //echo "Login fail";
+            
+            } else {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $v = $row["v"];
+                    $a = $row['a'];
+                    $k = $row['k'];
+                }
+            }
+            $sum = $v + $a + $k;
+            //echo($sum);
+            return $sum;
+        }
+    ?>
 
 <head>
     <meta charset="UTF-8">

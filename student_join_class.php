@@ -33,7 +33,7 @@
 
         if($checkVAK<=0) {
             echo "<script>
-                    alert('There are no fields to generate a report');
+                    alert('คุณยังไม่ได้ทำการทดสอบ VAK Test');
                     window.location.href='http://localhost/zontal/vaktest.php';
                    </script>";
         }
