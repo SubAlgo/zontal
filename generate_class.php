@@ -500,7 +500,7 @@
             *           Select score for shift         *
             *                                          *
             ******************************************-->
-            <div class="container">
+            <div class="container" style="margin-top: 10px; background: pink;">
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <b>ชุดข้อมูลการจัดกลุ่มเบื้องต้นที่ได้ผลคะแนน Generate Score น้อยที่สุด <?php echo($nSelect); ?> อันดับ</b>
@@ -527,6 +527,7 @@
                 </div>
             </div>
             <?php
+            /*
                 echo("<br>----- เลือกชุดข้อมูลที่ Generate ได้คะแนนน้อยที่สุด -------<br>");
                 for($i=0; $i<count($genScore); $i++) {
                     echo("<br>รูปแบบการ random ที่ [{$i}] " . json_encode($genScore[$i]));
@@ -545,6 +546,7 @@
                     echo("<br> Data : ". json_encode($objRandomData[$val]));
                     echo("<br> ------------");
                 }
+                */
             ?>
 
              <!--************* shift data ***************
@@ -552,30 +554,93 @@
             *                  shift data               *
             *                                           *
             ******************************************-->
+            
+            <div class="container" style="margin-top: 10px; background: #428ff4;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <b>จัดกลุ่มด้วยการ ShiftData</b>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        จำนวนรอบการ shift ข้อมูล ต่อ ผลลัพธ์การ random ที่ถูกเลือก <?php echo($nStudent); ?> รอบ
+                    </div>
+                </div>
+
+                <?php
+                    
+                    foreach($minIndexs as $val) {
+                        //$objRandomData[$val] คือตำแหน่งข้อมูลที่มีค่าผลลัพธ์การ gen ที่มีค่าน้อยที่สุด
+                        echo("<div class='row'>");
+                            echo("<div class='col-md-12'>");
+                            echo("<br>");
+                                echo("<hr>");
+                                echo("<h4>Shift ข้อมูลผลการ Random ที่ [{$val}]</h4>");
+                                $bufferShift = $objRandomData[$val];
+                                for($i=0; $i<$nStudent; $i++) {
+                                    echo("<br>");
+                                    $sho = $i+1;
+                                    echo("<b>Generate Score Shift รอบที่ [" . $sho . "]  : </b>");
+                                    $bufferShift = shiftData($minIndexs, $bufferShift, $perGroup);
+                                    //echo(count($bufferShift));
+                                    $bufferShift = createGroup($bufferShift, $perGroup);
+                                    echo("<br>");
+                                    //แสดงผลการจัดกลุ่ม
+                                    foreach($bufferShift as $v) {
+                                        foreach($v as $y) {
+                                            echo(json_encode($y['name']));
+                                        }
+                                        echo("<br>");
+                                        
+                                    }
+                                    $scoreAfterShift = generateScore($bufferShift);
+                                    echo("<b>score : </b> ". $scoreAfterShift);
+                                    
+                                    
+                                }
+                                
+                                //shiftData($minIndexs, $objRandomData[$val], $perGroup);
+
+                            echo("</div>");
+                        echo("</div>");
+                        //echo("การ Random รอบที่ [". $val. "] ได้คะแนน : " . json_encode($genScore[$val]). "<br>");
+                    }
+                     //$dataShift[ของผลลัพธ์การ Random ที่][รอบที่]
+
+                ?>
+              
+
+            
+            </div>
+
             <?php 
-                echo("<br>------------ shiftData------------");
+                //echo("<br>------------ shiftData------------");
                 //shiftData($minIndexs, $objRandomData);
+                /*
                 for($i=0; $i<count($minIndexs); $i++) {
                     shiftData($minIndexs, $objRandomData[$minIndexs[$i]], $perGroup);
                     echo("<br> ------------<br>");
                     //shiftData($minIndexs, $objRandomData[$minIndexs[0]]);
                 }
+                */
                
 
                 function shiftData($minIndexs, $objRandomData, $perGroup) {
                                         
                     //หาจำนวนกลุ่มที่ถูกแบ่ง
                     $g = count($objRandomData);
-                    echo("g = ". $g . "<br>");
-                    $src = [];
+
+                    //ใช้เพื่อทำการ deGroup
+                    $src = []; 
                     $shiftData = [];
+
                     for($i=0; $i<$g; $i++) {
                         $src = array_merge($src, $objRandomData[$i]);
                     }
                     
                     //หาจำนวนสมาชิกทั้งหมดใน array
                     $n = count($src);
-                    echo("n = ". $n . "<br>");
                     
                     //shift value
                     for($i=0; $i<$n; $i++) {
@@ -586,14 +651,7 @@
                         }                        
                     }
 
-                    echo(json_encode($src)."<br>");
-                    echo("<br>-----------------<br>");
-
-                    echo(json_encode($shiftData)."<br>");
-                    
-                    $dataScore = generateScore(createGroup($shiftData, $perGroup));
-                    echo("Score1 =". $dataScore."<br>");
-
+                    return($shiftData);
 
                 }
                 
