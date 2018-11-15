@@ -313,6 +313,31 @@
             return $minIndexs;
         }
 
+        //function สำหรับ shift ข้อมูล เพื่อเตรียมส่งไป generate ต่อไป
+        function shiftData($minIndexs, $objRandomData, $perGroup) {            
+            //หาจำนวนกลุ่มที่ถูกแบ่ง
+            $g = count($objRandomData);
+
+            //ใช้เพื่อทำการ deGroup
+            $src = []; 
+            $shiftData = [];
+
+            for($i=0; $i<$g; $i++) {
+                $src = array_merge($src, $objRandomData[$i]);
+            }
+            //หาจำนวนสมาชิกทั้งหมดใน array
+            $n = count($src);
+            //shift value
+            for($i=0; $i<$n; $i++) {
+                if($i == 0) {
+                    $shiftData[$i] = $src[$n-1];
+                } else {
+                    $shiftData[$i] = $src[$i-1];
+                }                        
+            }
+            return($shiftData);
+        }
+
 
     ?>
 
@@ -569,6 +594,7 @@
                 </div>
 
                 <?php
+                    $bestGroup = ['group' => '', 'score' => 100 ];
                     
                     foreach($minIndexs as $val) {
                         //$objRandomData[$val] คือตำแหน่งข้อมูลที่มีค่าผลลัพธ์การ gen ที่มีค่าน้อยที่สุด
@@ -578,7 +604,11 @@
                                 echo("<hr>");
                                 echo("<h4>Shift ข้อมูลผลการ Random ที่ [{$val}]</h4>");
                                 $bufferShift = $objRandomData[$val];
-                                //รอบมากกว่า $perGroup ก็ไม่มีประโยชน์แล้ว
+                                /****************************************
+                                 *                                      *
+                                 * รอบมากกว่า $perGroup ก็ไม่มีประโยชน์แล้ว   *  
+                                 *                                      * 
+                                ****************************************/
                                 for($i=0; $i<$perGroup; $i++) {
                                     echo("<br>");
                                     $sho = $i+1;
@@ -596,6 +626,12 @@
                                     }
                                     $scoreAfterShift = generateScore($bufferShift);
                                     echo("<b>score : </b> ". $scoreAfterShift);
+
+                                    //หาการจัดกลุ่มที่ดี ที่สุด
+                                    if($bestGroup['score']>$scoreAfterShift) {
+                                        $bestGroup['group'] = $bufferShift;
+                                        $bestGroup['score'] = $scoreAfterShift;
+                                    }
                                 }
                                 
                                 //shiftData($minIndexs, $objRandomData[$val], $perGroup);
@@ -604,57 +640,35 @@
                         echo("</div>");
                         //echo("การ Random รอบที่ [". $val. "] ได้คะแนน : " . json_encode($genScore[$val]). "<br>");
                     }
-                     //$dataShift[ของผลลัพธ์การ Random ที่][รอบที่]
-
                 ?>
               
 
             
             </div>
 
-            <?php 
-                //echo("<br>------------ shiftData------------");
-                //shiftData($minIndexs, $objRandomData);
-                /*
-                for($i=0; $i<count($minIndexs); $i++) {
-                    shiftData($minIndexs, $objRandomData[$minIndexs[$i]], $perGroup);
-                    echo("<br> ------------<br>");
-                    //shiftData($minIndexs, $objRandomData[$minIndexs[0]]);
-                }
-                */
-               
+            <div class="container" style="background-color:green; margin-top:10px;">
+                <div class="row">
+                    <div class="col-md-12 text-center" >
+                        <p><h3>ผลลัพธ์การจัดกลุ่มที่ดีที่สุด</h3></p>
+                        <?php 
+                            //Show Result Best Group
+                            echo("<h5>คะแนน : ".json_encode($bestGroup['score']). "</h5>");
+                            $i = 1;
+                            foreach($bestGroup['group'] as $v) {
+                                echo("<b>กลุ่มที่ [". $i ."] : </b>");
+                                foreach($v as $y) {
+                                    echo( json_encode($y['name']). " | ");
+                                }
+                                $i++;
+                                echo("<br>");
+                            }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            
 
-                function shiftData($minIndexs, $objRandomData, $perGroup) {
-                                        
-                    //หาจำนวนกลุ่มที่ถูกแบ่ง
-                    $g = count($objRandomData);
-
-                    //ใช้เพื่อทำการ deGroup
-                    $src = []; 
-                    $shiftData = [];
-
-                    for($i=0; $i<$g; $i++) {
-                        $src = array_merge($src, $objRandomData[$i]);
-                    }
-                    
-                    //หาจำนวนสมาชิกทั้งหมดใน array
-                    $n = count($src);
-                    
-                    //shift value
-                    for($i=0; $i<$n; $i++) {
-                        if($i == 0) {
-                            $shiftData[$i] = $src[$n-1];
-                        } else {
-                            $shiftData[$i] = $src[$i-1];
-                        }                        
-                    }
-
-                    return($shiftData);
-
-                }
-                
-
-            ?>
+            
             
         
         </div>
