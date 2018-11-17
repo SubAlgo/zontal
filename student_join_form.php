@@ -19,6 +19,32 @@
     <?php include('./layouts/header.php'); ?>
     <?php include('./layouts/menu.php'); ?>
 
+    <?php
+    /************************
+     *      FUCNTION        *
+     ***********************/
+    
+     //function สำหรับ check ว่า นักเรียนคนนี้ได้ลงทะเบียนใน class นี้หรือยัง
+    function checkJoined($conn, $classid, $stdEmail) {
+        $sql = "SELECT
+                    class_id,
+                    std_email
+                FROM
+                    `student_score`
+                WHERE
+                    class_id = '{$classid}' AND std_email = '{$stdEmail}'";
+
+        $result = mysqli_query($conn, $sql);
+
+        if(mysqli_num_rows($result) > 0) {;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ?>
+
     <!-- content -->
     <div class="container-fluid">
         <!-- ส่วนหัว Form -->
@@ -37,6 +63,16 @@
                         header("Location: http://{$url}");
                         die();
                     }
+
+                    //ถ้า select แล้ว row มากกว่า 1 เท่ากับว่า ได้ลงทะเบียนใน class เรียบร้อยแล้ว
+                    $checkJoined = checkJoined($conn, $_POST['class_id'], $_POST['std_email']);
+                    if ($checkJoined) {
+                        echo ("<script LANGUAGE='JavaScript'>
+                                window.alert('คุณได้ลงทะเบียน  Class นี้เรียบร้อยแล้ว');
+                                window.location.href='./student_join_class.php';
+                                </script>");
+                    }
+                    
                     print_r($_POST);
                     echo("<br>");
                 ?>
@@ -242,13 +278,17 @@
                         type: 'post',
                         data: data,
                         success: function(result) {
-                        alert(result)
-                        if(result == "Success") {
-                            alert("x")
+                            alert(result)
+                            location.href = "student_join_class.php"
+                            if(result == "Success") {
+                                
+                                //window.location.replace("./student_join_class.php");
+                                
+
+                            }
+                            //
                         }
-                        //window.location.replace("./student_join_class.php");
-                    }
-            });
+                    });
 
                     
                 })
