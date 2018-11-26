@@ -392,6 +392,8 @@
         $genScore = setArrayScore($loopRandom, $objRandomData);
         
         $minIndexs = fineMinGenScoreIndex($genScore, $nSelect);
+
+        $bestGroup = ['group' => '', 'score' => 100 ];
         
         
         /* ----- DATA -----*/
@@ -552,27 +554,105 @@
                 </div>
             </div>
             <?php
-            /*
-                echo("<br>----- เลือกชุดข้อมูลที่ Generate ได้คะแนนน้อยที่สุด -------<br>");
-                for($i=0; $i<count($genScore); $i++) {
-                    echo("<br>รูปแบบการ random ที่ [{$i}] " . json_encode($genScore[$i]));
-                }
-
-                
-                echo("<br>***********<br>");
-                echo("nSelect = " . $nSelect);
-                echo("<br>***********<br>");
-                
-                echo("<br> รูปแบบการ random ที่ " . json_encode($minIndexs));
-                
-
-                foreach($minIndexs as $val) {
-                    echo("<br> score : " . json_encode($genScore[$val]));
-                    echo("<br> Data : ". json_encode($objRandomData[$val]));
-                    echo("<br> ------------");
-                }
-                */
+            
             ?>
+            <!--************* crossOver data ****************
+            *                                               *
+            *              crossOver data                   *
+            *                                               *
+            **********************************************-->
+            <div class="container" style="background-color:grey;">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h5>จัดกลุ่มด้วยการ CrossOver</h5>
+                        <p>จัดเรียงตำแหน่งของข้อมูลที่ได้ผลการ generate ที่ดีที่สุด <?php echo($nSelect); ?> ลำดับแรก ใหม่ด้วยวิธี Cross Over</p>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    <div class="col-md-4 text-center">การจัดกลุ่มต้นฉบับ</div>
+                    <div class="col-md-4">ผลลัพธ์การ Cross Over</div>
+                    <div class="col-md-4">ผลลัพธ์คะแนนการ Generate หลัง Cross Over</div>
+                </div>
+                <?php
+                //echo("<br>----CrossOver-----<br>");
+                    $crossNo = 1;
+                    foreach($minIndexs as $val) {
+                        $preCross   = $objRandomData[$val];
+                        $cross      = $objRandomData[$val];
+                        $nGroup     = count($preCross);
+                        $nMember    = count($preCross[0]);
+                        $mean       = floor($nGroup/2);
+                        $countGroup = count($preCross);
+
+                    
+                        /**
+                         * Cross Over Algorithm
+                         */
+                        for($i=0; $i<$mean; $i++) {
+                            $cross[$i][$i] = $preCross[$nGroup-($i + 1)][$nMember-($i + 1)];
+                            $cross[$nGroup-($i + 1)][$nMember-($i + 1)] = $preCross[$i][$i];
+                        }
+
+
+                        echo("<div class='row'>");
+                        //-------------------
+                        echo("<div class='col-md-1'>");
+                            echo($crossNo);
+                            $crossNo++;
+                        echo("</div>");
+
+                        //-------------------
+                        echo("<div class='col-md-4'>");
+                            foreach($preCross as $v) {
+                                echo("[");
+                                foreach($v as $y) {
+                                    echo( json_encode($y['name']). " | ");
+                                }
+                                echo("],");
+                                echo("<br>");
+                            }
+                        echo("</div>");
+
+                        //-------------------
+                        echo("<div class='col-md-4'>");
+                            foreach($cross as $v) {
+                                echo("[");
+                                foreach($v as $y) {
+                                    echo( json_encode($y['name']). " | ");
+                                }
+                                echo("]");
+                                echo("<br>");
+                            }
+
+                        echo("</div>");
+
+                        //-------------------
+                        echo("<div class='col-md-3'>");
+                            
+                            $scoreAfterCross = generateScore($cross);
+                            echo($scoreAfterCross);
+                            //หาการจัดกลุ่มที่ดี ที่สุด
+                            if($bestGroup['score']>$scoreAfterCross) {
+                                $bestGroup['group'] = $cross;
+                                $bestGroup['score'] = $scoreAfterCross;
+                            }
+                        echo("</div>");
+                        echo("</div>");
+                        
+
+
+                        echo("<br><br>");
+
+                        
+
+                    }
+                
+            ?>
+            
+            </div>
+
+            
 
              <!--************* shift data ***************
             *                                           *
@@ -583,18 +663,13 @@
             <div class="container" style="margin-top: 10px; background: #428ff4;">
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <b>จัดกลุ่มด้วยการ ShiftData</b>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        จำนวนรอบการ shift ข้อมูล ต่อ ผลลัพธ์การ random ที่ถูกเลือก <?php echo($nStudent); ?> รอบ
+                        <h5>จัดกลุ่มด้วยการ Shift Data</h5>
+                        <p>จัดเรียงข้อมูลใหม่โดยการ shift โดยเลือกจากกลุ่มการ random ที่ได้คะแนนดีที่สุด <?php echo($nSelect); ?> ลำดับแรก </p>
                     </div>
                 </div>
 
                 <?php
-                    $bestGroup = ['group' => '', 'score' => 100 ];
+                    
                     
                     foreach($minIndexs as $val) {
                         //$objRandomData[$val] คือตำแหน่งข้อมูลที่มีค่าผลลัพธ์การ gen ที่มีค่าน้อยที่สุด
@@ -602,7 +677,7 @@
                             echo("<div class='col-md-12'>");
                             echo("<br>");
                                 echo("<hr>");
-                                echo("<h4>Shift ข้อมูลผลการ Random ที่ [{$val}]</h4>");
+                                echo("<h4>Shift ข้อมูลผลการ Random กลุ่มที่ [{$val}]</h4>");
                                 $bufferShift = $objRandomData[$val];
                                 /****************************************
                                  *                                      *
@@ -614,6 +689,7 @@
                                     $sho = $i+1;
                                     echo("<b>Generate Score Shift รอบที่ [" . $sho . "]  : </b>");
                                     $bufferShift = shiftData($minIndexs, $bufferShift, $perGroup);
+                                    //echo("<h3>". json_encode($bufferShift). "</h3>");
                                     //echo(count($bufferShift));
                                     $bufferShift = createGroup($bufferShift, $perGroup);
                                     echo("<br>");
@@ -641,10 +717,9 @@
                         //echo("การ Random รอบที่ [". $val. "] ได้คะแนน : " . json_encode($genScore[$val]). "<br>");
                     }
                 ?>
-              
-
-            
             </div>
+
+
 
             <div class="container" style="background-color:green; margin-top:10px;">
                 <div class="row">
@@ -653,6 +728,14 @@
                         <?php 
                             //Show Result Best Group
                             echo("<h5>คะแนน : ".json_encode($bestGroup['score']). "</h5>");
+                            //$sendValue = json_encode($bestGroup);
+                            $sendValue = [  'classid' => $classid, 
+                                            'group' => $bestGroup['group']
+                                        ];
+                            
+                            $sendValue = json_encode($sendValue);
+                            echo($sendValue);
+                            echo("<input type='hidden' id='sendValue' value='{$sendValue}'>");
                             $i = 1;
                             foreach($bestGroup['group'] as $v) {
                                 echo("<b>กลุ่มที่ [". $i ."] : </b>");
@@ -667,11 +750,35 @@
                 </div>
             </div>
             
-
-            
-            
-        
+            <div class="container" style="margin-top:10px;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span class="btn btn-primary" id="send">Send group report</span>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#send').on('click', ()=>{
+                    let data = $('#sendValue').val()
+                    let obj = JSON.parse(data)
+                    
+                    $.ajax({
+                        url: 'ajax_save_group.php',
+                        type: 'post',
+                        data: obj,
+                        success: function(result) {
+                            //return กลับมาจะเป็น string 
+                            //console.log(JSON.parse(result))
+                            alert(result)
+                            //console.log(result)
+                        }
+                    }) 
+                })
+            })
+        </script>
 
 
     </div>
