@@ -63,50 +63,52 @@
 
 
     <!-- content -->
-    <div class="container">
-    <form action="" method="post">
-            <div class="form-group row">
+    <div class="container" style="margin-top:10px;">
+        <form action="" method="post">
 
-                <!-- Email -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+            <div class="form-group">
+                <div class="row">
+                    <!-- Email -->
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="col-md-4"></div>
                 </div>
-                <div class="col-md-2"></div>
-
-                <!-- Password -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>                
+                
+                <div class="row" style="margin-top:10px;">
+                    <!-- Password -->
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>                
+                    </div>
+                    <div class="col-md-4"></div>
                 </div>
-                <div class="col-md-2"></div>
-
-                <!-- Submit button -->
-                <div class="container text-center" style="margin-top:10px">
+                
+                <div class="row text-center" style="margin-top:10px">
+                    <!-- Submit button -->
                     <div class="col-md-12">
                         <input type="submit" id="submit" class="btn btn-primary" value="Login">
                         <button type="button" class="btn btn-primary" id="btn-back" name="btn-back">Register</button>    
                     </div>
                 </div>
-
-
-                <div class="container text-center" style="margin-top:10px">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <?php
-                                if ($loginStatus == 0) {
-                                    echo("<p class='text-danger' id='showError'><b>อีเมล์หรือพาสเวิร์ดไม่ถูกต้อง</b></p>");
-                                    $loginStatus = 1;
-                                }
-                                
-                            ?>
-                            <p class='text-danger' id='showError' style='display:none'><b>อีเมล์หรือพาสเวิร์ดไม่ถูกต้อง</b></p>
-                        </div>
-                    </div>
-                </div>
-                
             </div>
         </form>
+
+        <div class="container text-center" style="margin-top:10px">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php
+                        if ($loginStatus == 0) {
+                            echo("<p class='text-danger' id='showError'><b>อีเมล์หรือพาสเวิร์ดไม่ถูกต้อง</b></p>");
+                            $loginStatus = 1;
+                        }
+                    ?>
+                    <p class='text-danger' id='showError' style='display:none'><b>อีเมล์หรือพาสเวิร์ดไม่ถูกต้อง</b></p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     
