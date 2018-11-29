@@ -98,17 +98,17 @@
 
             <div class="row">
                 <div class="col-md-12 text-center">
-                    Class ID : <p id="demo"></p>
+                    <b>Class ID :</b> <span id="demo"></span>
                 </div>
             </div>
         </div>
 
         <div class="container">
             <div class="row text-center">
-                <div class="col-md-3">Name of Subject</div>
-                <div class="col-md-4">Description</div>
-                <div class="col-md-3">Teacher</div>
-                <div class="col-md-2">Status</div>
+                <div class="col-md-3"><b>Name of Subject</b></div>
+                <div class="col-md-4"><b>Description</b></div>
+                <div class="col-md-3"><b>Teacher</b></div>
+                <div class="col-md-2"><b>Status</b></div>
             </div>
             <div class="row text-center">
                 <div class="col-md-3"><p id="subjectname"></p></div>
