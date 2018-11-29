@@ -65,7 +65,8 @@
     <div class="container-fluid">
         <!-- ส่วนหัว Form -->
         <div class="container text-center">
-            <h3>Join Class <?php echo($class_id); ?></h3>
+            <h3>Join Class</h3>
+            <h4>Class id : <?php echo($class_id); ?></h4>
             <p>หน้าสำหรับให้นักศึกษาเข้ามากรอกข้อมูลคะแนนสำหรับการ join class</p>
         </div>
 
@@ -149,6 +150,7 @@
         <!-- SELECT VAK Score -->
         <div class="container text-center" style="border: 1px solid black">
             <p><b>VAK Score</b></p>
+            <p><b>(V = Visual | A = Auditory | K = Kinesthetic)</b></p>
             <?php
                /*Select VAK Score */
                $sqlVAK = "SELECT v, a, k FROM users WHERE email = '{$std_email}'";
@@ -264,7 +266,7 @@
                 <div class="text-center">
                     <!--<input class="btn btn-primary" type="submit" value="ยืนยัน">-->
                     <span class="btn btn-primary" id="submit">Submit</span>
-                    <span class="btn btn-danger" id="cancle">Cancle</span>
+                    <span class="btn btn-danger" id="cancle">Cancel</span>
                 </div>
             
             </form>
