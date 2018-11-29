@@ -21,7 +21,9 @@
         }
     
         //จัดการ การ Login
+        $loginStatus = 1;
         if($method == "POST") {
+            
             if(isset($_POST['email']) && isset($_POST['password'])) {
                 $email      = $_POST['email'];
                 $password   = $_POST['password'];
@@ -32,8 +34,7 @@
                 $result = mysqli_query($conn, $sql);
 
                 if(!(mysqli_num_rows($result) > 0)) {
-                    echo "Login fail";
-                
+                    $loginStatus = 0;
                 } else {
                     while ($row = mysqli_fetch_assoc($result)) {
                         $name = $row["name"];
@@ -46,6 +47,8 @@
             }
         }
     ?>
+
+    
     <!--
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -57,6 +60,7 @@
 <body>
     <?php include('./layouts/header.php'); ?>
     <?php include('./layouts/menu.php'); ?>
+
 
     <!-- content -->
     <div class="container">
@@ -77,14 +81,30 @@
                 </div>
                 <div class="col-md-2"></div>
 
-
                 <!-- Submit button -->
-                <div class="col-md-2" ></div>
-                <div class="col-md-8">
-                    <input type="submit" id="submit" class="btn btn-primary" value="Login">
-                    <button type="button" class="btn btn-primary" id="btn-back" name="btn-back">Register</button>    
+                <div class="container text-center" style="margin-top:10px">
+                    <div class="col-md-12">
+                        <input type="submit" id="submit" class="btn btn-primary" value="Login">
+                        <button type="button" class="btn btn-primary" id="btn-back" name="btn-back">Register</button>    
+                    </div>
                 </div>
-                <div class="col-md-2" ></div>
+
+
+                <div class="container text-center" style="margin-top:10px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?php
+                                if ($loginStatus == 0) {
+                                    echo("<p class='text-danger' id='showError'><b>อีเมล์หรือพาสเวิร์ดไม่ถูกต้อง</b></p>");
+                                    $loginStatus = 1;
+                                }
+                                
+                            ?>
+                            <p class='text-danger' id='showError' style='display:none'><b>อีเมล์หรือพาสเวิร์ดไม่ถูกต้อง</b></p>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </form>
     </div>
