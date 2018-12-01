@@ -82,18 +82,19 @@
                         type: 'post',
                         data: data,
                         success: function(result) {
-                            //alert(result)
-                            if(result.trim() === 'success') {
+                            if(result.trim() === '0') {
                                 alert("ลบข้อมูลสำเร็จ")
                                 location.href = "teacher_dashboard.php"
-                            } else {
-                                alert(result)
+                            } else if(result.trim() != '0') {
+                                alert('ลบข้อมูลไม่สำเร็จ โปรดติดต่อผู้พัฒนา')
                                 location.href = "teacher_dashboard.php"
                             }
-                            //location.href = "student_join_class.php"
-                            
                         }
                     });
+            })
+
+            $('#cancel').on('click', ()=> {
+                location.href = "teacher_dashboard.php"
             })
         })
     </script>
