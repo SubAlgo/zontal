@@ -3,17 +3,19 @@
 
     $data = $_POST;
 
-    $classid    = "";
-    $subject    = $data['subject'];
-    $desc       = $data['desc'];
-    $teacher    = $data['teacher'];
-    $pass       = $data['pass'];
-    $perGroup   = $data['perGroup'];
-    $v          = $data['v'];
-    $a          = $data['a'];
-    $k          = $data['k'];
-    $prev = [];
-    $checkDate  = $data['checkDate'];
+    $classid        = "";
+    $subject        = $data['subject'];
+    $desc           = $data['desc'];
+    $teacher        = $data['teacher'];
+    $pass           = $data['pass'];
+    $perGroup       = $data['perGroup'];
+    $nGroup         = $data['nGroup'];
+    $student_limit  = $data['nStudent'];
+    $v              = $data['v'];
+    $a              = $data['a'];
+    $k              = $data['k'];
+    $prev           = [];
+    $checkDate      = $data['checkDate'];
 
     //เตรียมข้อมูล รายวิชาที่ต้องผ่าน
     if(isset($data['prev'])) {
@@ -21,14 +23,21 @@
     }
     
     //-----สร้าง CLASS_ID-----
-    //1. check ว่า id run ไปถึงรหัสไหนแล้ว
-    //2. เอา id ล่าสุด + 1 แล้วผสมกับคำว่า "class" เช่น class1
-    $sqlCheckClassId = "SELECT COUNT('id') as total FROM gen_classid";
-    $resultCheck = mysqli_query($conn, $sqlCheckClassId);
-    $r =  $resultCheck->fetch_row();
+    
+    function createClassid($conn) {
+        $sql        = "SELECT title FROM gen_classid ORDER BY title DESC";
+        $result     = mysqli_query($conn, $sql);
+        $r          = mysqli_fetch_array($result);
+        $lasteID    = $r['title'];
+        $cut1       = substr($lasteID,0,5);
+        $cut2       = substr($lasteID,5);
+        $cid        = $cut2+1;
+        $newID      = "{$cut1}".$cid;
 
-    $classid = "class".($r[0]+1);
-    echo $classid;
+        return $newID;
+    }
+    $classid = createClassid($conn);
+    
     //-----สร้าง CLASS_ID-----
     
 
@@ -47,7 +56,9 @@
                         `teacher_email`, 
                         `description`, 
                         `password`, 
-                        `pergroup`, 
+                        `pergroup`,
+                        `n_group`,
+                        `student_limit`,
                         `v`, 
                         `a`, 
                         `k`, 
@@ -60,6 +71,8 @@
                         '{$desc}',
                         '{$pass}',
                         '{$perGroup}',
+                        '{$nGroup}',
+                        '{$student_limit}',
                         '{$v}',
                         '{$a}',
                         '{$k}',
