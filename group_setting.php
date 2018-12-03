@@ -30,13 +30,7 @@
     
     
     ?>
-    <!--
-    
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    -->
+  
     <title>Create Class</title>
 </head>
 <style>
@@ -53,11 +47,11 @@
         <h3>Create Class</h3>
         
         <div class="container" style="border: 1px solid black">
-            <form action="" id="create_class" method="get">
+            <form action="" id="create_class" method="get" style="margin-top:10px;">
                 <input type="hidden" id="teacher" value="<?php echo("{$_SESSION['email']}"); ?>">
 
                 <div class="text-center1 row">
-                    <div class="col-md-5">Name of Subject: </div>
+                    <div class="col-md-5">ชื่อคลาส: </div>
                     <div class="col-md-7">
                         <input type="text" size="40" id="subject" name="subject" placeholder="Ex. CS441">
                     </div>
@@ -65,7 +59,7 @@
                 </div>
 
                 <div class="text-center1 row">
-                    <div class="col-md-5">Description</div>
+                    <div class="col-md-5">คำอธิบาย</div>
                     <div class="col-md-7">
                         <textarea rows="4" cols="40" id="description" name="description" form="create_class" placeholder="Ex. Algorithms Analysis and Design."></textarea>
                     </div>
@@ -73,17 +67,45 @@
                 </div>
 
                 <div class="text-center1 row">
-                    <div class="col-md-5">Password of Class:</div>
+                    <div class="col-md-5">รหัสเข้าร่วมคลาส:</div>
                     <div class="col-md-7">
                         <input type="text" size="40" id="password" name="password" placeholder="Make your password 4-6 number.">
                     </div>
                     <hr>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-5">Number of student per group:</div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-5">
+                        <span>จำนวนกลุ่มทั้งหมดในคลาส:</span>
+                    </div>
                     <div class="col-md-7">
-                        <select name="std_limit" id="std_limit">
+                        <select name="nGroup" id="nGroup">
+                        <option value="0">Select</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>  
+                            <option value="3">3</option>  
+                            <option value="4">4</option>  
+                            <option value="5">5</option>  
+                            <option value="6">6</option>  
+                            <option value="7">7</option>  
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                        </select>
+                        <span>กลุ่ม</span>
+                    </div>
+                    
+                </div>
+
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-5">จำนวนนักศึกษาต่อกลุ่ม:</div>
+                    <div class="col-md-7">
+                        <select name="perGroup" id="perGroup">
                             <option value="0">Select</option>
                             <option value="1">1</option>
                             <option value="2">2</option>  
@@ -106,9 +128,20 @@
                             <option value="19">19</option>
                             <option value="20">20</option>
                         </select>
+                        <span>คน / กลุ่ม</span>
                     </div>
-                    <hr>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <span>จำนวนนักศึกษาทั้งหมดในคลาส:</span>
+                    </div>
+                    <div class="col-md-7">
+                        <span id="nStudent"></span>
+                    </div>
+                </div>
+
+                
 
                 <div class="row">
                     <div class="col-md-12">
@@ -186,9 +219,9 @@
                 <div class="row text-center" style="padding-top:5px">
                     <div class="col-md-12">
                         <!-- <input class="btn btn-primary" type="submit" value="Open"> -->
-                        <span class="btn btn-primary" id="btn_open">Open</span>
-                        <span class="btn btn-success" id="btn_gen">Generate</span>
-                        <span class="btn btn-danger">Close</span>
+                        <span class="btn btn-primary" id="btn_open">Create</span>
+                        <!-- <span class="btn btn-success" id="btn_gen">Generate</span> -->
+                        <span class="btn btn-danger" id="btn_close">Cancel</span>
                     </div>
                 </div>
                 
@@ -199,6 +232,34 @@
     
     <script type="text/javascript">
         $(document).ready(function () {
+            let nGroup;
+            let perGroup;
+            let nStudent = 0;
+
+            $('#btn_close').on('click', () => {
+                nGroup = $('#nGroup').val()
+                perGroup = $('#perGroup').val()
+                nStudent = nGroup * perGroup
+                
+                $('#nStudent').html(nStudent  + " คน")
+            })
+
+            //ถ้าเปลี่ยนค่าจำนวนกลุ่ม ให้...
+            $('#nGroup').on('change', ()=> {
+                nGroup = $('#nGroup').val()
+                perGroup = $('#perGroup').val()
+                nStudent = nGroup * perGroup
+                
+                $('#nStudent').html(nStudent  + " คน")
+            })
+
+            //ถ้าเปลี่ยนค่าจำนวนนักศึกษาต่อกลุ่ม ให้...
+            $('#perGroup').on('change', ()=> {
+                nGroup = $('#nGroup').val()
+                perGroup = $('#perGroup').val()
+                nStudent = nGroup * perGroup
+                $('#nStudent').html(nStudent + " คน")
+            })
             
             let prev = [];
             // Function สร้างรายวิชาที่ต้องการ
@@ -265,10 +326,10 @@
                 let teacher = $("#teacher").val();
                 //alert(v+"|"+a+"|"+k)
 
-                subject = $("#subject").val();
-                desc = $("#description").val();
-                pass = $("#password").val();
-                perGroup = $("#std_limit").val();
+                subject     = $("#subject").val();
+                desc        = $("#description").val();
+                pass        = $("#password").val();
+                perGroup    = $("#perGroup").val();
 
                 //checkVAK สำหรับเตรียมข้อมูลก่อนส่งค่า
                 //คือ ถ้าเลือก check VAK ถึงจะเข้ามากำหนดค่า
@@ -277,6 +338,15 @@
                 let checkV = $("#v:checked").length;
                 let checkA = $("#a:checked").length;
                 let checkK = $("#k:checked").length;
+
+                
+                if(nStudent == 0) {
+                    alert("ไม่สามารถสร้างคลาสได้ \n เนื่องจากกำหนดจำนวนกลุ่ม หรือ นักศึกษาต่อกลุ่มไม่ถูกต้อง")
+                    return false
+                }
+                alert(nStudent)
+
+                
                 
                 if(checkVAK != 0) {
                     if(checkV != 0) {
@@ -309,7 +379,9 @@
                             subject : subject,
                             desc : desc,
                             pass: pass,
+                            nGroup, nGroup,
                             perGroup: perGroup,
+                            nStudent: nStudent,
                             v: v,
                             a: a,
                             k: k,
@@ -318,23 +390,17 @@
                             date_start: date_start,
                             date_end: date_end                
                             };
-
-                /*
-                let jso = '{    "employees" : [' +
-                                '{ "firstName":"John" , "lastName":"Doe" },' +
-                                '{ "firstName":"Anna" , "lastName":"Smith" },' +
-                                '{ "firstName":"Peter" , "lastName":"Jones" } ]}';
-                */
-
+                console.log(data)
+                
                 $.ajax({
-                url: 'ajax_createclass.php',
-                type: 'post',
-                data: data,
-                success: function(result) {
-                    alert(result)
-                }
-            });
-
+                    url: 'ajax_createclass.php',
+                    type: 'post',
+                    data: data,
+                    success: function(result) {
+                        alert(result)
+                    }
+                });
+            
                 //var obj = JSON.parse(jso);
 
                 //alert(obj)
@@ -343,7 +409,7 @@
                 //alert(data.email);
                 //alert(obj['employees'][0]['firstName'])
                 //console.log(obj['employees'][0]['firstName'])
-                console.log(data)
+                
                 //console.log(JSON.parse(data))
                 
 
