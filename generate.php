@@ -32,14 +32,18 @@
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-4">กรอก id class</div>
-                <div class="col-md-4"><input type="text" name="classid" id="classid" placeholder="class id"></div>
+                <div class="col-md-4">
+                    <input type="text" name="classid" id="classid" placeholder="class id" required>
+                </div>
                 <div class="col-md-2"></div>
             </div>
             
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-4">กรอก จำนวนรอบการ random</div>
-                <div class="col-md-4"><input type="text" name="loop" id="loop" placeholder="รอบการ random"></div>
+                <div class="col-md-4">
+                    <input type="text" name="loop" id="loop" placeholder="รอบการ random" required>
+                </div>
                 <div class="col-md-2"></div>
             </div>
 
@@ -52,15 +56,19 @@
                 <div class="col-md-2"></div>
             </div>
 
-            <div class="row text-center">
-                <div class="col-md-12"><input class="btn btn-primary" type="submit" value="ยืนยัน"></div>
+            <div class="row text-center" style="margin-top:10px;">
+                <div class="col-md-12">
+                    <input class="btn btn-primary" id="submit" type="submit" value="Generate">
+                </div>
             </div>
 
+            <!--
             <div class="row text-center">
                 <div class="col-md-12">
                     <p>ทดลองด้วย class1 หรือ class3</p>
                 </div>
             </div>
+            -->
         </form>
 
     </div>
