@@ -338,12 +338,40 @@
             return($shiftData);
         }
 
+        //function สำหรับ check ว่า class นี้ได้มีการ save ผลการgenerate หรือยัง
+        function checkGrouped($conn, $classid) {
+            $sql = "SELECT id FROM `result_grouped` WHERE classid = '{$classid}'";
+            $result = mysqli_query($conn, $sql);
+            //ถ้ามีการบันทึกการจัดกลุ่มแล้วให้ return true
+            //ถ้ายังไม่มีการบันทึกให้ return false
+            if(mysqli_num_rows($result) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        
+
 
     ?>
 
     <?php
         /* ----- DATA -----*/
         $classid = $_POST['classid'];
+        //------------------
+
+
+        $groupedStatus = checkGrouped($conn, $classid);
+        if($groupedStatus) {
+            echo("มีการจัดแล้ว");
+        } else {
+            echo("ยังไม่มีการจัดกลุ่ม");
+        }
+
+
+
+        //--------------
         //จำนวนรอบการ random
         $loopRandom = $_POST['loop'];
 
@@ -734,7 +762,7 @@
                                         ];
                             
                             $sendValue = json_encode($sendValue);
-                            echo($sendValue);
+                            //echo($sendValue);
                             echo("<input type='hidden' id='sendValue' value='{$sendValue}'>");
                             $i = 1;
                             foreach($bestGroup['group'] as $v) {
@@ -745,6 +773,15 @@
                                 $i++;
                                 echo("<br>");
                             }
+
+                            /**
+                             * $groupedStatus = checkGrouped($conn, $classid);
+                                if($groupedStatus) {
+                                    echo("มีการจัดแล้ว");
+                                } else {
+                                    echo("ยังไม่มีการจัดกลุ่ม");
+                                }
+                             */
                         ?>
                     </div>
                 </div>
@@ -753,7 +790,27 @@
             <div class="container" style="margin-top:10px;">
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <span class="btn btn-primary" id="send">Send group report</span>
+                        <?php
+                            if($groupedStatus) {
+                                echo("
+                                <p>Class ได้ถูกบันทึกผลการจัดกลุ่มเรียบร้อยแล้ว ต้องการบันทึกผลการจัดกลุ่ม ใหม่ หรือ ไม่?</p>
+                                <span class='btn btn-primary' id='confirm'>ใช่</span>
+                                <span class='btn btn-danger' id='cancel'>ไม่</span>
+                                ");
+                            }
+                        ?>
+                        
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-12 text-center">
+                        <?php
+                            if($groupedStatus) {
+                                echo("<span class='btn btn-success' id='send' style='display:none;'>บันทึกผลการจัดกลุ่ม</span>");
+                            } else {
+                                echo("<span class='btn btn-success' id='send'>บันทึกผลการจัดกลุ่ม</span>");
+                            }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -761,6 +818,16 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
+                //เมื่อกดปุ่ม ใช่ จะ show ปุ่ม send group report
+                $("#confirm").on('click', ()=> {
+                    $('#send').show();
+                })
+
+                $("#cancel").on('click', ()=> {
+                    $('#send').hide();
+                })
+
+                //เมื่อกดปุ่ม ใม่ จะ disable ปุ่ม send group report
                 $('#send').on('click', ()=>{
                     let data = $('#sendValue').val()
                     let obj = JSON.parse(data)
