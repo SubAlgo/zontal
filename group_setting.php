@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="text-center1 row">
-                    <div class="col-md-5">คำอธิบาย</div>
+                    <div class="col-md-5">รายละเอียดคลาส: </div>
                     <div class="col-md-7">
                         <textarea rows="4" cols="40" id="description" name="description" form="create_class" placeholder="Ex. Algorithms Analysis and Design."></textarea>
                     </div>
