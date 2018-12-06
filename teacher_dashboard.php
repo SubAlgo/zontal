@@ -35,7 +35,44 @@
     }
     ?>
 
-    <?php 
+    <?php
+        function getClassData($conn, $c_id) {
+            $data = [];
+            $sql = "SELECT
+                        class.student_limit
+                    FROM
+                        class
+                    WHERE class.id = '{$c_id}'";
+            $result = mysqli_query($conn, $sql);
+
+            $row = mysqli_fetch_array($result);
+
+            return $row['student_limit'];
+        }
+
+        function getStudentData($conn, $c_id) {
+            $data = [];
+            $sql = "SELECT
+                        users.name
+                    FROM
+                        student_score AS stdScore
+                    LEFT JOIN users ON stdScore.std_email = users.email
+                    WHERE
+                        stdScore.class_id = '{$c_id}'
+                    GROUP BY
+                        stdScore.std_email";
+
+            $result = mysqli_query($conn, $sql);
+
+            
+            $total = mysqli_num_rows($result);
+            return $total;
+        }
+    ?>
+
+    <?php
+        
+
         $sql = "SELECT
                     class.id,
                     class.title,
@@ -76,20 +113,30 @@
                                 echo("<tr>");
                                 echo("<td>{$row['id']}</td>");
                                 echo("<td>{$row['title']}</td>");
-                                echo("<td>
-                                        <a href='class_description.php?c_id={$row['id']}' class='btn btn-primary'>View</a>
-                                        <span class='btn btn-success'>Generate</span>
-                                        <a href='class_close.php?c_id={$row['id']}' class='btn btn-danger'>Close</a>
-                                    </td>");
+                                echo("<td>");
+                                    echo(" <a href='class_description.php?c_id={$row['id']}' class='btn btn-primary'>View</a> ");
+                                    $classData = getClassData($conn, $row['id']);
+                                    $stdData = getStudentData($conn, $row['id']);
+                                    if($classData == $stdData) {
+                                        echo("<a class='btn btn-success' href='./generate_class.php?c_id={$row['id']}'>Generate</a>");
+                                        //echo(" <span class='btn btn-success' id='{$row['id']}' value='{$row['id']}'>Generate</span> ");
+                                    } else {
+                                        //echo("{$stdData}/{$classData}");
+                                        echo(" <span class='btn btn-success disabled'>Generate</span> " );
+                                    }
+                                    
+                                    echo(" <a href='class_close.php?c_id={$row['id']}' class='btn btn-danger'>Close</a> ");
+                                echo("</td>");
+                                        
+                                        
                                 echo("</tr>");
                             }
                         }
-                       
-                                
-                           
+                         
                     ?>
+                    <a href=""></a>
                 </tbody>
-                
+                <a href=''></a>
             </table>
         </div>
 
