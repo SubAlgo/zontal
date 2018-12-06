@@ -91,6 +91,24 @@
             return $data;
         }
 
+        function getGroupedData ($conn, $c_id) {
+            $sql = "SELECT result FROM result_grouped WHERE classid = '{$c_id}'";
+            $result = mysqli_query($conn, $sql);
+            $data = 0;
+                if (mysqli_num_rows($result) > 0) {
+                    while($row = $result->fetch_assoc()) {
+                        $data = $row['result'];
+                    } 
+                } else {
+                    $arr = array("error");
+                    $myJSON = json_encode($arr);
+                }
+
+                $data_decode = json_decode($data);
+                return $data_decode;
+               
+        }
+
 
     ?>
     
@@ -101,6 +119,7 @@
         $classData = getClassData($conn, $c_id);
         $stdData = getStudentData($conn, $c_id);
         $nStd = count($stdData);
+        $groupedData = getGroupedData($conn, $c_id);
     ?>
 
     <?php
@@ -143,7 +162,7 @@
                         </tr>
 
                         <tr>
-                            <td><b>จำนวนนักเรียนต่อกลุ่ม:</b></td>
+                            <td><b>จำนวนนักศึกษาต่อกลุ่ม:</b></td>
                             <td><?php echo($classData['pergroup']); ?> คน/กลุ่ม</td>
                         </tr>
 
@@ -167,7 +186,31 @@
                                         $i++;
                                     }
                                 ?>
-                            
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p><b>ผลลัพธ์การจัดกลุ่ม:</b></p>
+                            </td>
+                            <td>
+                                <?php
+                                    if($groupedData == 0) {
+                                        echo("ยังไม่มีการจัดกลุ่ม");
+                                    } elseif(count($groupedData) > 0) {
+                                        $groupNo = 1;
+                                       
+                                        foreach($groupedData as $val) {
+                                            echo("<b>สมาชิกกลุ่มที่:</b> {$groupNo}: ");
+                                            $groupNo++;
+                                            foreach($val as $v) {
+                                                    echo($v->name);
+                                                echo(" | ");
+                                            }
+                                            echo("<br>");
+                                        }
+                                    }
+                                ?>
                             </td>
                         </tr>
                     </tbody>
