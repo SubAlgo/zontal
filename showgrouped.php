@@ -75,6 +75,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
+                    <h3>คลาสไอดี: <?php echo($_GET['c_id']); ?></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
                     <h4>ผลลัพธ์การจัดกลุ่ม</h4>
                 </div>
             </div>
@@ -139,8 +144,8 @@
 
     
     <!-- Footer -->
-    <div>
-        Footer
-    </div>
+    <?php
+      include('./layouts/footer.php'); 
+    ?>
 </body>
 </html>
