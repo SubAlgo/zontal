@@ -2,6 +2,10 @@
 <html lang="en">
 <?php
     include('config.php');
+    if(isset($_SESSION['email'])){
+        header( "location: ./index.php" );
+        exit(0);
+    }
 ?>
 <head>
     <meta charset="UTF-8">
