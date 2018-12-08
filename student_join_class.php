@@ -73,8 +73,13 @@
 
 
     <!-- content -->
-    <div>
-        <h4>STUDENT JOIN CLASS</h4>
+    <div class="container" style="margin-top: 10px;">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h4>ลงทะเบียนเข้าร่วมคลาส</h4>
+            </div>
+        </div>
+        
         
         
         <form id="qqq" action="./student_join_form.php" method="post">
@@ -86,47 +91,55 @@
             
         </form>
         
-
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    CODE
+                    <b>กรอกไอดีของคลาส:</b> 
                     <input type="text" id="search" name="search">
-                    <span class="btn btn-primary" id="btn_search">SEARCH</span>
+                    <span class="btn btn-primary" id="btn_search">ค้นหา</span>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" style="margin-top:10px;">
                 <div class="col-md-12 text-center">
                     <b>Class ID :</b> <span id="demo"></span>
                 </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3"><b>Name of Subject</b></div>
-                <div class="col-md-4"><b>Description</b></div>
-                <div class="col-md-3"><b>Teacher</b></div>
-                <div class="col-md-2"><b>Status</b></div>
-            </div>
-            <div class="row text-center">
-                <div class="col-md-3"><p id="subjectname"></p></div>
-                <div class="col-md-4"><p id="desc"></div>
-                <div class="col-md-3"><p id="teacher"></p></div>
-                <div class="col-md-2">
-                    <input class="btn btn-primary" style="display:none" id="join" type="submit" value="Join" form="qqq">
-                </div>
-            </div>
+        <div class="container" style="margin-top:10px;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="text-center">
+                        <td><b>ชื่อวิชา</b></td>
+                        <td><b>คำอธิบาย</b></td>
+                        <td><b>ผู้สอน</b></td>
+                        <td><b>เข้าร่วม</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <td><p id="subjectname"></p></td>
+                        <td><p id="desc"></td>
+                        <td><p id="teacher"></p></td>
+                        <td>
+                            <input class="btn btn-primary" style="display:none" id="join" type="submit" value="Join" form="qqq">
+                        </td>
+                    </tr>
+                </tbody>
+            
+            </table>
+
+ 
 
             
         </div>
     </div>
     
     <!-- Footer -->
-    <div>
-        Footer
-    </div>
+    <?php
+      include('./layouts/footer.php'); 
+    ?>
 </body>
 </html>
 

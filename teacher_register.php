@@ -53,65 +53,64 @@
 
         <form action="" method="post">
 
-            <div class="form-group row">
+            <div class="row" style="margin-top:10px;">
                 <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    Teacher Registration
+                <div class="col-md-8 text-center">
+                    <span><h5>Teacher Registration</h5></span>
                 </div>
                 <div class="col-md-2"></div>
-
-                <!-- Email -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Student ID -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" id="userid" name="userid" placeholder="Teacher ID" required>
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Name -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Password -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>                
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Confirm Password -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm password" required>                
-                </div>
-                <div class="col-md-2"></div>
-
-
-                <!-- Submit button -->
-                <div class="col-md-2" ></div>
-                <div class="col-md-8">
-                    <input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register">
-                    <button type="button" class="btn btn-primary"  id="btn-back" name="btn-back">Back</button>    
-                </div>
-                <div class="col-md-2" ></div>
             </div>
+
+            <div class="form-group row">
+                <label for="email" class="col-md-2 col-form-label">Email: </label>
+                <div class="col-md-10">
+                    <input class="form-control" type="email" id="email" name="email" placeholder="xxx@gmail.com" required style="width: 70%;">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="userid" class="col-md-2 col-form-label">Teacher ID: </label>
+                <div class="col-md-10">
+                    <input class="form-control" type="text" id="userid" name="userid" placeholder="Teacher ID" required style="width: 70%;">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="name" class="col-md-2 col-form-label">Name: </label>
+                <div class="col-md-10">
+                    <input class="form-control" type="text" id="name" name="name" placeholder="Name" required style="width: 70%;">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="password" class="col-md-2 col-form-label">Password: </label>
+                <div class="col-md-10">
+                    <input class="form-control" type="password" id="password" name="password" placeholder="Password" required style="width: 70%;">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="confirm" class="col-md-2 col-form-label">Confirm password: </label>
+                <div class="col-md-10">
+                    <input class="form-control" type="password" id="confirm" name="confirm" placeholder="Confirm password" required style="width: 70%;">
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register">
+                    <a class="btn btn-primary" href="./login.php">Back</a> 
+                </div>
+            </div>
+
         </form>
     </div>
     
     
     <!-- Footer -->
-    <div>
-        Footer
-    </div>
+    <?php
+      include('./layouts/footer.php'); 
+    ?>
 
     
 </body>

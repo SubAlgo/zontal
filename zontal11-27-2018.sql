@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 21, 2018 at 04:04 PM
+-- Generation Time: Nov 27, 2018 at 07:48 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.7
 
@@ -49,7 +49,8 @@ CREATE TABLE `class` (
 INSERT INTO `class` (`id`, `title`, `teacher_email`, `description`, `password`, `pergroup`, `v`, `a`, `k`, `date_start`, `date_end`) VALUES
 ('class1', 'CS411 By Aj.Pan', 'tea03@gmail.com', 'Algo', 1234, 2, 1, 0, 1, '2018-10-01 08:30:00', '2018-10-01 08:30:00'),
 ('class2', 'CS422', 'tea03@gmail.com', 'advance SA', 1234, 5, 1, 0, 1, '2018-10-01 08:30:00', '2018-10-01 08:30:00'),
-('class3', 'Test', 'tea03@gmail.com', 'Test Test', 1234, 4, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+('class3', 'Test', 'tea03@gmail.com', 'Test Test', 1234, 4, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+('class4', 'CSSSS', 'tea03@gmail.com', 'sssss', 1234, 4, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -69,7 +70,8 @@ CREATE TABLE `gen_classid` (
 INSERT INTO `gen_classid` (`id`, `title`) VALUES
 (6, 'class1'),
 (7, 'class2'),
-(8, 'class3');
+(8, 'class3'),
+(9, 'class4');
 
 -- --------------------------------------------------------
 
@@ -116,6 +118,25 @@ INSERT INTO `pre_data` (`id`, `class_id`, `std_email`, `score`) VALUES
 (9, 'class1', 'std05@gmail.com', '[\"2\",\"0\",\"8\",\"3.5\",\"2.8\"]'),
 (10, 'class1', 'std06@gmail.com', '{\"score\":{\"10\",\"0\",\"8\",\"1.9\",\"2\"}}'),
 (11, 'class1', 'std01@gmail.com', '{\"screen\": \"50 inch\", \"resolution\": \"2048 x 1152 pixels\", \"ports\": {\"hdmi\": 1, \"usb\": 3}, \"speakers\": {\"left\": \"10 watt\", \"right\": \"10 watt\"}}');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `result_grouped`
+--
+
+CREATE TABLE `result_grouped` (
+  `id` int(11) NOT NULL,
+  `classid` varchar(30) NOT NULL,
+  `result` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `result_grouped`
+--
+
+INSERT INTO `result_grouped` (`id`, `classid`, `result`) VALUES
+(4, 'class3', '[[{\"name\":\"stest11\",\"score\":[\"9\",\"3\",\"2.50\"]},{\"name\":\"stest09\",\"score\":[\"7\",\"10\",\"2.50\"]},{\"name\":\"stest12\",\"score\":[\"10\",\"1\",\"3.75\"]},{\"name\":\"stest07\",\"score\":[\"3\",\"6\",\"3.00\"]}],[{\"name\":\"stest03\",\"score\":[\"8\",\"1\",\"4.00\"]},{\"name\":\"stest10\",\"score\":[\"6\",\"4\",\"1.50\"]},{\"name\":\"stest06\",\"score\":[\"4\",\"7\",\"4.00\"]},{\"name\":\"stest02\",\"score\":[\"7\",\"5\",\"3.00\"]}],[{\"name\":\"stest05\",\"score\":[\"5\",\"4\",\"3.50\"]},{\"name\":\"stest04\",\"score\":[\"9\",\"2\",\"4.00\"]},{\"name\":\"stest01\",\"score\":[\"7\",\"3\",\"2.00\"]},{\"name\":\"stest08\",\"score\":[\"4\",\"9\",\"2.00\"]}]]');
 
 -- --------------------------------------------------------
 
@@ -171,7 +192,27 @@ INSERT INTO `student_score` (`id`, `class_id`, `subject_title`, `std_email`, `sc
 (22, 'class3', 'CS100', 'stest09@gmail.com', '2.50'),
 (23, 'class3', 'CS100', 'stest10@gmail.com', '1.50'),
 (24, 'class3', 'CS100', 'stest11@gmail.com', '2.50'),
-(25, 'class3', 'CS100', 'stest12@gmail.com', '3.75');
+(25, 'class3', 'CS100', 'stest12@gmail.com', '3.75'),
+(26, 'class1', 'CS100', 'stest12@gmail.com', '3.00'),
+(27, 'class1', 'CS101', 'stest12@gmail.com', '2.00'),
+(28, 'class1', 'CS100', 'stest11@gmail.com', '2.00'),
+(29, 'class1', 'CS101', 'stest11@gmail.com', '2.00'),
+(30, 'class1', 'CS100', 'stest11@gmail.com', '2.00'),
+(31, 'class1', 'CS101', 'stest11@gmail.com', '2.00'),
+(32, 'class1', 'CS100', 'stest10@gmail.com', '2.00'),
+(33, 'class1', 'CS101', 'stest10@gmail.com', '2.00'),
+(34, 'class1', 'CS100', 'stest09@gmail.com', '2.00'),
+(35, 'class1', 'CS101', 'stest09@gmail.com', '2.00'),
+(36, 'class1', 'CS100', 'stest08@gmail.com', '2.00'),
+(37, 'class1', 'CS101', 'stest08@gmail.com', '2.00'),
+(38, 'class1', 'CS100', 'stest09@gmail.com', '2.00'),
+(39, 'class1', 'CS101', 'stest09@gmail.com', '2.00'),
+(40, 'class1', 'CS100', 'stest09@gmail.com', '2.00'),
+(41, 'class1', 'CS101', 'stest09@gmail.com', '2.00'),
+(42, 'class1', 'CS100', 'stest07@gmail.com', '2.00'),
+(43, 'class1', 'CS101', 'stest07@gmail.com', '2.00'),
+(44, 'class4', 'CS100', 'std01@gmail.com', '4.00'),
+(45, 'class4', 'CS200', 'std01@gmail.com', '4.00');
 
 -- --------------------------------------------------------
 
@@ -233,7 +274,9 @@ INSERT INTO `subject_req` (`id`, `title`, `class_id`) VALUES
 (1, 'CS100', 'class1'),
 (2, 'CS101', 'class1'),
 (3, 'CS200', 'class2'),
-(4, 'CS100', 'class3');
+(4, 'CS100', 'class3'),
+(5, 'CS100', 'class4'),
+(6, 'CS200', 'class4');
 
 -- --------------------------------------------------------
 
@@ -301,7 +344,8 @@ INSERT INTO `users` (`id`, `email`, `u_id`, `name`, `password`, `v`, `a`, `k`, `
 (22, 'stest09@gmail.com', 'stest09', 'stest09', '1234', 7, 3, 10, 3),
 (23, 'stest10@gmail.com', 'stest10', 'stest10', '1234', 6, 10, 4, 3),
 (24, 'stest11@gmail.com', 'stest11', 'stest11', '1234', 9, 8, 3, 3),
-(25, 'stest12@gmail.com', 'stest12', 'stest12', '1234', 10, 9, 1, 3);
+(25, 'stest12@gmail.com', 'stest12', 'stest12', '1234', 10, 9, 1, 3),
+(27, 'tea04@gmail.com', 'tests', 'test', '1234', 0, 0, 0, 2);
 
 --
 -- Indexes for dumped tables
@@ -333,6 +377,13 @@ ALTER TABLE `pre_data`
   ADD PRIMARY KEY (`id`),
   ADD KEY `class_id` (`class_id`),
   ADD KEY `std_email` (`std_email`);
+
+--
+-- Indexes for table `result_grouped`
+--
+ALTER TABLE `result_grouped`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `classid` (`classid`);
 
 --
 -- Indexes for table `student`
@@ -394,7 +445,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `gen_classid`
 --
 ALTER TABLE `gen_classid`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -409,6 +460,12 @@ ALTER TABLE `pre_data`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT for table `result_grouped`
+--
+ALTER TABLE `result_grouped`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
@@ -418,7 +475,7 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `student_score`
 --
 ALTER TABLE `student_score`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `sub`
@@ -436,7 +493,7 @@ ALTER TABLE `subject`
 -- AUTO_INCREMENT for table `subject_req`
 --
 ALTER TABLE `subject_req`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `test`
@@ -448,7 +505,7 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
@@ -466,6 +523,12 @@ ALTER TABLE `class`
 ALTER TABLE `pre_data`
   ADD CONSTRAINT `pre_data_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class` (`id`),
   ADD CONSTRAINT `pre_data_ibfk_2` FOREIGN KEY (`std_email`) REFERENCES `users` (`email`);
+
+--
+-- Constraints for table `result_grouped`
+--
+ALTER TABLE `result_grouped`
+  ADD CONSTRAINT `result_grouped_ibfk_1` FOREIGN KEY (`classid`) REFERENCES `class` (`id`);
 
 --
 -- Constraints for table `student`

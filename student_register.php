@@ -12,13 +12,7 @@
     <?php
         include("./layouts/meta.php");
     ?>
-    <!--
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    -->
+   
     <title>Student Register</title>
 </head>
 <body>
@@ -26,69 +20,68 @@
     <?php include('./layouts/menu.php'); ?>
 
     <!-- content -->
-    <div class="container">
-
-        <form action="" method="post">
-
-            <div class="form-group row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    Student Registration
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Email -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Student ID -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" id="userid" name="userid" placeholder="Student ID" required>
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Name -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Password -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>                
-                </div>
-                <div class="col-md-2"></div>
-
-                <!-- Confirm Password -->
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm password" required>                
-                </div>
-                <div class="col-md-2"></div>
-
-
-                <!-- Submit button -->
-                <div class="col-md-2" ></div>
-                <div class="col-md-8">
-                    <input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register">
-                    <button type="button" class="btn btn-primary"  id="btn-back" name="btn-back">Back</button>    
-                </div>
-                <div class="col-md-2" ></div>
+    
+    <div class="container" style="margin-top:10px;">
+    <form action="" method="post">
+    
+        <div class="row" style="margin-top:10px;">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center">
+                <span><h5>Student Registration</h5></span>
             </div>
-        </form>
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="form-group row">
+            <label for="email" class="col-md-2 col-form-label">Email: </label>
+            <div class="col-md-10">
+                <input class="form-control" type="email" id="email" name="email" placeholder="xxx@gmail.com" required style="width: 70%;">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="userid" class="col-md-2 col-form-label">Student ID: </label>
+            <div class="col-md-10">
+                <input class="form-control" type="text" id="userid" name="userid" placeholder="Student ID" required style="width: 70%;">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="name" class="col-md-2 col-form-label">Name: </label>
+            <div class="col-md-10">
+                <input class="form-control" type="text" id="name" name="name" placeholder="Name" required style="width: 70%;">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="password" class="col-md-2 col-form-label">Password: </label>
+            <div class="col-md-10">
+                <input class="form-control" type="password" id="password" name="password" placeholder="Password" required style="width: 70%;">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="confirm" class="col-md-2 col-form-label">Confirm password: </label>
+            <div class="col-md-10">
+                <input class="form-control" type="password" id="confirm" name="confirm" placeholder="Confirm password" required style="width: 70%;">
+            </div>
+        </div>
+
+        <div class="row text-center">
+            <div class="col-md-12">
+                <input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register">
+                <a class="btn btn-primary" href="./login.php">Back</a> 
+            </div>
+        </div>
+    
+    </form>
     </div>
     
     
     <!-- Footer -->
-    <div>
-        Footer
-    </div>
+    <?php
+      include('./layouts/footer.php'); 
+    ?>
 
     
 </body>

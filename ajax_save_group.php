@@ -96,27 +96,3 @@
         echo $mystr;
     }
 ?>
-
-
-<?php
-        
-    //echo(count($arr));
-    //echo($objClassid);
-    //echo($data['classid']);
-    //echo($data['data']);
-
-    /*
-
-    $sql = "INSERT INTO result_grouped (classid, result)
-            VALUES ('{$classid}' , '{$group}')
-            ";
-
-    if(mysqli_query($conn, $sql) == false) {
-        $mystr = "<div align='center'><b> Error: " .  mysqli_error($conn)."</b></div>";
-        echo $mystr;
-    } else {
-        echo "success";
-    }
-    */
-
-?>

@@ -32,7 +32,7 @@
         $test_a = $row["a"];
         $test_k = $row["k"];
     }
-    echo("{$test_v} {$test_a} {$test_k}");
+    //echo("{$test_v} {$test_a} {$test_k}");
     if(($test_v + $test_a+ $test_k) > 0) {
         echo"ทำข้อสอบแล้ว";
     }
@@ -145,7 +145,7 @@
 
     <!-- content -->
     <div class="container-fluid">
-        <div class="container text-center">
+        <div class="container text-center" style="margin-top:10px;">
             <h3>20 Questions | By Hypnosiswithvic </h3>
         </div>
 
@@ -324,16 +324,15 @@
                 
             </form>
         </div>
-
-
-
+    </div>
+    <div style="height:50px;">
     </div>
 
     
     <!-- Footer -->
-    <div>
-        Footer
-    </div>
+    <?php
+      include('./layouts/footer.php'); 
+    ?>
 </body>
 </html>
 

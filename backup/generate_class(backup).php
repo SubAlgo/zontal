@@ -245,12 +245,140 @@
             return $val;
         }
 
+        //function Random ตำแหน่งข้อมูลนักศึกษา
+        function createRandomData($studentData, $rIndex) {
+            $rData = [];
+            for($i=0; $i<count($studentData); $i++) {
+                $rData[$i] = $studentData[$rIndex[$i]];
+            }
+            return $rData;
+        }
+
+        //function RandomGroup
+        function createRandomGroup($studentData, $perGroup) {
+            $rIndex = randIndex(count($studentData));
+            $rData = createRandomData($studentData, $rIndex);
+            $groupRandom = createGroup($rData, $perGroup);
+
+            //echo(json_encode($groupRandom));
+            return $groupRandom;
+        }
+
+        // function สำหรับสร้างข้อมูลกลุ่มที่ถูก random การจัดเรียง โดยขนาด array เท่ากับ จำนวนรอบในการ random
+        function createObjRandomData ($studentData, $perGroup, $loopRandom) {
+            for($i=0; $i<$loopRandom; $i++) {
+                $objRandomData[$i] = createRandomGroup($studentData, $perGroup);
+            }
+            return $objRandomData;
+        }
+
+        //********** สร้างค่า SCORE **********
+        //function setgenScore สำหรับ generate score เพื่อส่งไปเก็บใน array $genScore[] 
+        function setgenScore($objRandomData, $i) {
+            $genScore = generateScore($objRandomData[$i]);
+            return $genScore;
+        }
+
+        //สร้างข้อมูล $genScore[] ซึ่งเป็นข้อมูลผลลัพธ์การ generate ที่อยู่ในรูปแบบ array
+        function setArrayScore($loopRandom, $objRandomData) {
+            for($i=0; $i<$loopRandom; $i++) {
+                $genScore[$i] = setgenScore($objRandomData, $i);
+            }
+            return $genScore;
+        }
+        //********** สร้างค่า SCORE **********
+        
+        //function สำหรับหา index ของค่าที่ต่ำที่สุดใน array
+        function fineMinGenScoreIndex($genScore, $nSelect) {
+            /**
+             * จุดประสงค์ เพื่อหา index ของค่า min ใน array ตามจำนวนที่ระบุ
+             * วิธีการ 
+             * 1 หาค่า max ใน array
+             * 2 หา index ของค่า min
+             * 3 เอาค่า index ที่ได้ไปเก็บไว้ใน array $minIndexs[]
+             * 4 แทนค่าข้อมูล min เดิมด้วย ค่า max  | $genScore[$minIndex] = $max;
+             * 
+             */
+            $minIndexs = [];
+            $max =  max($genScore);
+            //echo("<br>" . $max);
+            for($i=0; $i<$nSelect; $i++) {
+                $minIndex = array_keys($genScore, min($genScore));
+                $minIndex = $minIndex[0];
+                array_push($minIndexs, $minIndex);
+                $genScore[$minIndex] = $max;
+            }
+           // echo("<br>" . json_encode($minIndexs));
+            //echo("<br>" . json_encode($genScore));
+            return $minIndexs;
+        }
+
+        //function สำหรับ shift ข้อมูล เพื่อเตรียมส่งไป generate ต่อไป
+        function shiftData($minIndexs, $objRandomData, $perGroup) {            
+            //หาจำนวนกลุ่มที่ถูกแบ่ง
+            $g = count($objRandomData);
+
+            //ใช้เพื่อทำการ deGroup
+            $src = []; 
+            $shiftData = [];
+
+            for($i=0; $i<$g; $i++) {
+                $src = array_merge($src, $objRandomData[$i]);
+            }
+            //หาจำนวนสมาชิกทั้งหมดใน array
+            $n = count($src);
+            //shift value
+            for($i=0; $i<$n; $i++) {
+                if($i == 0) {
+                    $shiftData[$i] = $src[$n-1];
+                } else {
+                    $shiftData[$i] = $src[$i-1];
+                }                        
+            }
+            return($shiftData);
+        }
+
+        //function สำหรับ check ว่า class นี้ได้มีการ save ผลการgenerate หรือยัง
+        function checkGrouped($conn, $classid) {
+            $sql = "SELECT id FROM `result_grouped` WHERE classid = '{$classid}'";
+            $result = mysqli_query($conn, $sql);
+            //ถ้ามีการบันทึกการจัดกลุ่มแล้วให้ return true
+            //ถ้ายังไม่มีการบันทึกให้ return false
+            if(mysqli_num_rows($result) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        
+
 
     ?>
 
     <?php
         /* ----- DATA -----*/
         $classid = $_POST['classid'];
+        //------------------
+
+
+        $groupedStatus = checkGrouped($conn, $classid);
+        if($groupedStatus) {
+            echo("มีการจัดแล้ว");
+        } else {
+            echo("ยังไม่มีการจัดกลุ่ม");
+        }
+
+
+
+        //--------------
+        //จำนวนรอบการ random
+        $loopRandom = $_POST['loop'];
+
+        //percent จำนวนที่จะ select
+        $perSelect = $_POST['percentMin'];
+        //จำนวนค่า min ที่จะตัดมาใช้
+        $nSelect = round(($loopRandom * $perSelect)/100);
         
         $classData  = getClassData($conn, $classid);
         $v_req      = $classData['v'];
@@ -259,73 +387,44 @@
         $perGroup   = $classData['pergroup'];
 
         $nStudent   = getTotalStudent($conn, $classid);
-        $studentData = getStudentData($conn, $classid,$v_req, $a_req, $k_req );
-        echo(json_encode($studentData[0]). "<br>");
-        echo(json_encode($studentData[1]). "<br>");
-        echo(json_encode($studentData[2]). "<br>");
-        echo(json_encode($studentData[3]). "<br>");
-        echo(json_encode($studentData[4]). "<br>");
-        echo(json_encode($studentData[5]). "<br>");
-        echo(json_encode($studentData[6]). "<br>");
-        echo(json_encode($studentData[7]). "<br>");
-        echo(json_encode($studentData[8]). "<br>");
-        echo(json_encode($studentData[9]). "<br>");
-        echo(json_encode($studentData[10]). "<br>");
-        echo(json_encode($studentData[11]). "<br>");
-
-
-        echo("----------<br>");
-  
-        
-        
-        echo("Test function ran() <br>");
-        //for($i=0; $i<5; $i++) {
-        //$rIndex คือ ค่าที่ได้จากการ Random เพื่อนำใช้สลับตำแหน่งการจัดเรียงนักศึกษา
-        $rIndex = randIndex($nStudent);
-        //print_r($rIndex);
-        echo("ค่า rIndex".json_encode($rIndex));
-        //}
-
-
-        /**
-         * จัดเรียงลำดับนักศึกษาใหม่ โดยอาศัย index จากการ random
-         */
-        $rValue = [];
-        for($i=0; $i<$nStudent; $i++) {
-            $rValue[$i] = $studentData[$rIndex[$i]];
-        }
-        //$rValue[0]  =$studentData[$rIndex[0]];
-        //$rValue[1]  =$studentData[$rIndex[1]];
-        //$rValue[2]  =$studentData[$rIndex[2]];
-        //$rValue[3]  =$studentData[$rIndex[3]];
-        //$rValue[4]  =$studentData[$rIndex[4]];
-        //$rValue[5]  =$studentData[$rIndex[5]];
-        //$rValue[6]  =$studentData[$rIndex[6]];
-        //$rValue[7]  =$studentData[$rIndex[7]];
-        //$rValue[8]  =$studentData[$rIndex[8]];
-        //$rValue[9]  =$studentData[$rIndex[9]];
-        //$rValue[10]  =$studentData[$rIndex[10]];
-        //$rValue[11]  =$studentData[$rIndex[11]];
-
-        echo("<br>");
-        for($i=0; $i<count($rValue); $i++) {
-            //print_r($rValue[$i]);
-            //echo("<br>");
-            echo(json_encode($rValue[$i]) . "<br>");
-        }
-
-        
-
-
-    
-        $group      = createGroup($studentData, $perGroup);
-        $group1      = createGroup($rValue, $perGroup);   
-
-        $nScore     = count($group[0][0]['score']);
+        $studentData = getStudentData($conn, $classid,$v_req, $a_req, $k_req );     //source หลักข้อมูลนักศึกษา
+        //จำนวนกลุ่มทั้งหมด
         $nGroup     = $nStudent / $perGroup;
+        
+        /********************
+        *                   * 
+        *   Randomdata      *
+        *                   * 
+        ********************/
+        
+        //random index ใช้สำหรับจัดเรียงข้อมูลตำแหน่ง
+        $rIndex = randIndex($nStudent);
+        //random data เป็น list ข้อมูลนักศึกษาที่ได้จากการจัดเรียงตามค่า randomIndex
+        $rData = createRandomData($studentData, $rIndex);
+        //ผลลัพธ์การจัดกลุ่มนักศึกษาก่อนที่จะมีการ random
+        $group          = createGroup($studentData, $perGroup);
+        $groupRandom    = createGroup($rData, $perGroup);
         
         $generateScore = 0; //กำหนดค่าเริ่มต้นของ generate score
 
+        /******************************************************************
+        * ในการ random เพื่อ generate ค่า จะมีการกำหนดรอบของการ random         *
+        * โดยในการ random นี้ จะใช้ข้อมูล $studentData ซึ่งเป็น source ข้อมูลหลัก    *
+        * เมื่อส่งข้อมูลเข้าไป func ก็จะเอาค่าไป random เพื่อจัดกลุ่มใหม่                *
+        * แล้วส่งค่ากลับออกมาเป็น array ข้อมูลที่ถูกจัดเรียงกลุ่มใหม่                    *
+        * โดยขนาด array เท่ากับรอบการ random ที่กำหนด                         *
+        *******************************************************************/
+        $objRandomData =  createObjRandomData($studentData, $perGroup, $loopRandom);
+        
+        //ผลลัพธ์ของการ generate ที่อยู่ในรูปแบบ array เพื่อให้พร้อมในการนำไปวน loop แสดงผล
+        $genScore = setArrayScore($loopRandom, $objRandomData);
+        
+        $minIndexs = fineMinGenScoreIndex($genScore, $nSelect);
+
+        $bestGroup = ['group' => '', 'score' => 100 ];
+        
+        
+        /* ----- DATA -----*/
     ?>
 
     <!-- content -->
@@ -386,7 +485,7 @@
             </div>
             
             <hr>
-            <div class="row">
+            <div class="row" style="border: 1px solid black;">
                 <div class="col-md-6">
                 <?php
                     for($i=0; $i<($nGroup);$i++){
@@ -413,46 +512,340 @@
             
             </div>
                     
-            <!--********แสดงผลลัพธ์การ Generate*******
+            <!--********แสดงผลลัพธ์การ Random*********
             *                                       *
-            *           แสดงผลลัพธ์การ Generate      *
+            *           แสดงผลลัพธ์การ Random        *
             *                                       *
             **************************************-->
-            <div class="row">
-                <div class="col-md-6">
-                <?php
-                    for($i=0; $i<($nGroup);$i++){
-                        $n = $i + 1;
-                        echo("<b>สมาชิกกลุ่ม [{$n}] </b>: <br>");
-                        //echo(json_encode($group[$i]));
-                        foreach($group1[$i] as $value) {
-                            echo("<ul>");
-                            echo("<li>");
-                            echo("  ชื่อ    ". json_encode($value['name']));
-                            echo("  คะแนน  ". json_encode($value['score']));
-                            echo("</li>");
-                            echo("</ul>");
+            <?php
+                //createRandomGroup($studentData, $perGroup);
+                
+                for($i=0; $i<$loopRandom; $i++) {
+                    echo("<div class='row' style='border: 1px solid black;'>");
+                        echo("<div class='col-md-6'>");
+                        echo("<b>random รอบที่: {$i} </b><br>");
+                        for($j=0; $j<$nGroup;$j++) {
+                            $n = $j+1;
+                            echo("<b>สมาชิกกลุ่มที่ [ {$n} ] </b>: <br>");
+                            foreach($objRandomData[$i][$j] as $value) {
+                                echo("<ul>");
+                                echo("<li>");
+                                echo("  ชื่อ    ". json_encode($value['name']));
+                                echo("  คะแนน  ". json_encode($value['score']));
+                                echo("</li>");
+                                echo("</ul>");
+                            }
                         }
-                    }
-                ?>
+                        echo("</div>");
+                        echo("<div class='col-md-6'>");
+                            echo("<b>ผลลัพธ์การ Generate score</b> : ". $genScore[$i]);
+                        
+                        echo("</div>");
+                    echo("</div>");
+                }
+            ?>
+            <!--********แสดงผลลัพธ์การ Random*********
+            *                                       *
+            *           แสดงผลลัพธ์การ Random        *
+            *                                       *
+            **************************************-->
+
+            <!--******** Select score for shift*********
+            *                                          *
+            *           Select score for shift         *
+            *                                          *
+            ******************************************-->
+            <div class="container" style="margin-top: 10px; background: pink;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <b>ชุดข้อมูลการจัดกลุ่มเบื้องต้นที่ได้ผลคะแนน Generate Score น้อยที่สุด <?php echo($nSelect); ?> อันดับ</b>
+                    </div>
                 </div>
 
-                <!--********Test************* 
-                *                           *
-                *           TEST            *
-                *                           *
-                **************************-->
-                <div class="col-md-6">
-                <?php
-                    $generateScore = generateScore($group1);
-                    echo("<b>ผลลัพธ์การ Generate score</b> : ". $generateScore);
-                ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php
+                            echo("<div class='text-center'> ผลลัพธ์การ Random รอบที่ ". json_encode($minIndexs)  ."</div>")
+                        ?>
+                    </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <?php
+                            foreach($minIndexs as $val) {
+                                echo("การ Random รอบที่ [". $val. "] ได้คะแนน : " . json_encode($genScore[$val]). "<br>");
+                            }
+                        ?>
+                    </div>
+                
+                </div>
+            </div>
+            <?php
+            
+            ?>
+            <!--************* crossOver data ****************
+            *                                               *
+            *              crossOver data                   *
+            *                                               *
+            **********************************************-->
+            <div class="container" style="background-color:grey;">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h5>จัดกลุ่มด้วยการ CrossOver</h5>
+                        <p>จัดเรียงตำแหน่งของข้อมูลที่ได้ผลการ generate ที่ดีที่สุด <?php echo($nSelect); ?> ลำดับแรก ใหม่ด้วยวิธี Cross Over</p>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    <div class="col-md-4 text-center">การจัดกลุ่มต้นฉบับ</div>
+                    <div class="col-md-4">ผลลัพธ์การ Cross Over</div>
+                    <div class="col-md-4">ผลลัพธ์คะแนนการ Generate หลัง Cross Over</div>
+                </div>
+                <?php
+                //echo("<br>----CrossOver-----<br>");
+                    $crossNo = 1;
+                    foreach($minIndexs as $val) {
+                        $preCross   = $objRandomData[$val];
+                        $cross      = $objRandomData[$val];
+                        $nGroup     = count($preCross);
+                        $nMember    = count($preCross[0]);
+                        $mean       = floor($nGroup/2);
+                        $countGroup = count($preCross);
+
+                    
+                        /**
+                         * Cross Over Algorithm
+                         */
+                        for($i=0; $i<$mean; $i++) {
+                            $cross[$i][$i] = $preCross[$nGroup-($i + 1)][$nMember-($i + 1)];
+                            $cross[$nGroup-($i + 1)][$nMember-($i + 1)] = $preCross[$i][$i];
+                        }
+
+
+                        echo("<div class='row'>");
+                        //-------------------
+                        echo("<div class='col-md-1'>");
+                            echo($crossNo);
+                            $crossNo++;
+                        echo("</div>");
+
+                        //-------------------
+                        echo("<div class='col-md-4'>");
+                            foreach($preCross as $v) {
+                                echo("[");
+                                foreach($v as $y) {
+                                    echo( json_encode($y['name']). " | ");
+                                }
+                                echo("],");
+                                echo("<br>");
+                            }
+                        echo("</div>");
+
+                        //-------------------
+                        echo("<div class='col-md-4'>");
+                            foreach($cross as $v) {
+                                echo("[");
+                                foreach($v as $y) {
+                                    echo( json_encode($y['name']). " | ");
+                                }
+                                echo("]");
+                                echo("<br>");
+                            }
+
+                        echo("</div>");
+
+                        //-------------------
+                        echo("<div class='col-md-3'>");
+                            
+                            $scoreAfterCross = generateScore($cross);
+                            echo($scoreAfterCross);
+                            //หาการจัดกลุ่มที่ดี ที่สุด
+                            if($bestGroup['score']>$scoreAfterCross) {
+                                $bestGroup['group'] = $cross;
+                                $bestGroup['score'] = $scoreAfterCross;
+                            }
+                        echo("</div>");
+                        echo("</div>");
+                        
+
+
+                        echo("<br><br>");
+
+                        
+
+                    }
+                
+            ?>
             
             </div>
+
             
-        
+
+             <!--************* shift data ***************
+            *                                           *
+            *                  shift data               *
+            *                                           *
+            ******************************************-->
+            
+            <div class="container" style="margin-top: 10px; background: #428ff4;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h5>จัดกลุ่มด้วยการ Shift Data</h5>
+                        <p>จัดเรียงข้อมูลใหม่โดยการ shift โดยเลือกจากกลุ่มการ random ที่ได้คะแนนดีที่สุด <?php echo($nSelect); ?> ลำดับแรก </p>
+                    </div>
+                </div>
+
+                <?php
+                    
+                    
+                    foreach($minIndexs as $val) {
+                        //$objRandomData[$val] คือตำแหน่งข้อมูลที่มีค่าผลลัพธ์การ gen ที่มีค่าน้อยที่สุด
+                        echo("<div class='row'>");
+                            echo("<div class='col-md-12'>");
+                            echo("<br>");
+                                echo("<hr>");
+                                echo("<h4>Shift ข้อมูลผลการ Random กลุ่มที่ [{$val}]</h4>");
+                                $bufferShift = $objRandomData[$val];
+                                /****************************************
+                                 *                                      *
+                                 * รอบมากกว่า $perGroup ก็ไม่มีประโยชน์แล้ว   *  
+                                 *                                      * 
+                                ****************************************/
+                                for($i=0; $i<$perGroup; $i++) {
+                                    echo("<br>");
+                                    $sho = $i+1;
+                                    echo("<b>Generate Score Shift รอบที่ [" . $sho . "]  : </b>");
+                                    $bufferShift = shiftData($minIndexs, $bufferShift, $perGroup);
+                                    //echo("<h3>". json_encode($bufferShift). "</h3>");
+                                    //echo(count($bufferShift));
+                                    $bufferShift = createGroup($bufferShift, $perGroup);
+                                    echo("<br>");
+                                    //แสดงผลการจัดกลุ่ม
+                                    foreach($bufferShift as $v) {
+                                        foreach($v as $y) {
+                                            echo(json_encode($y['name']));
+                                        }
+                                        echo("<br>");
+                                    }
+                                    $scoreAfterShift = generateScore($bufferShift);
+                                    echo("<b>score : </b> ". $scoreAfterShift);
+
+                                    //หาการจัดกลุ่มที่ดี ที่สุด
+                                    if($bestGroup['score']>$scoreAfterShift) {
+                                        $bestGroup['group'] = $bufferShift;
+                                        $bestGroup['score'] = $scoreAfterShift;
+                                    }
+                                }
+                                
+                                //shiftData($minIndexs, $objRandomData[$val], $perGroup);
+
+                            echo("</div>");
+                        echo("</div>");
+                        //echo("การ Random รอบที่ [". $val. "] ได้คะแนน : " . json_encode($genScore[$val]). "<br>");
+                    }
+                ?>
+            </div>
+
+
+
+            <div class="container" style="background-color:green; margin-top:10px;">
+                <div class="row">
+                    <div class="col-md-12 text-center" >
+                        <p><h3>ผลลัพธ์การจัดกลุ่มที่ดีที่สุด</h3></p>
+                        <?php 
+                            //Show Result Best Group
+                            echo("<h5>คะแนน : ".json_encode($bestGroup['score']). "</h5>");
+                            //$sendValue = json_encode($bestGroup);
+                            $sendValue = [  'classid' => $classid, 
+                                            'group' => $bestGroup['group']
+                                        ];
+                            
+                            $sendValue = json_encode($sendValue);
+                            //echo($sendValue);
+                            echo("<input type='hidden' id='sendValue' value='{$sendValue}'>");
+                            $i = 1;
+                            foreach($bestGroup['group'] as $v) {
+                                echo("<b>กลุ่มที่ [". $i ."] : </b>");
+                                foreach($v as $y) {
+                                    echo( json_encode($y['name']). " | ");
+                                }
+                                $i++;
+                                echo("<br>");
+                            }
+
+                            /**
+                             * $groupedStatus = checkGrouped($conn, $classid);
+                                if($groupedStatus) {
+                                    echo("มีการจัดแล้ว");
+                                } else {
+                                    echo("ยังไม่มีการจัดกลุ่ม");
+                                }
+                             */
+                        ?>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container" style="margin-top:10px;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <?php
+                            if($groupedStatus) {
+                                echo("
+                                <p>Class ได้ถูกบันทึกผลการจัดกลุ่มเรียบร้อยแล้ว ต้องการบันทึกผลการจัดกลุ่ม ใหม่ หรือ ไม่?</p>
+                                <span class='btn btn-primary' id='confirm'>ใช่</span>
+                                <span class='btn btn-danger' id='cancel'>ไม่</span>
+                                ");
+                            }
+                        ?>
+                        
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-12 text-center">
+                        <?php
+                            if($groupedStatus) {
+                                echo("<span class='btn btn-success' id='send' style='display:none;'>บันทึกผลการจัดกลุ่ม</span>");
+                            } else {
+                                echo("<span class='btn btn-success' id='send'>บันทึกผลการจัดกลุ่ม</span>");
+                            }
+                        ?>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                //เมื่อกดปุ่ม ใช่ จะ show ปุ่ม send group report
+                $("#confirm").on('click', ()=> {
+                    $('#send').show();
+                })
+
+                $("#cancel").on('click', ()=> {
+                    $('#send').hide();
+                })
+
+                //เมื่อกดปุ่ม ใม่ จะ disable ปุ่ม send group report
+                $('#send').on('click', ()=>{
+                    let data = $('#sendValue').val()
+                    let obj = JSON.parse(data)
+                    
+                    $.ajax({
+                        url: 'ajax_save_group.php',
+                        type: 'post',
+                        data: obj,
+                        success: function(result) {
+                            //return กลับมาจะเป็น string 
+                            //console.log(JSON.parse(result))
+                            alert(result)
+                            //console.log(result)
+                        }
+                    }) 
+                })
+            })
+        </script>
 
 
     </div>

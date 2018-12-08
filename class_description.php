@@ -223,11 +223,13 @@
         
 
     </div>
+    <div style="height:50px;">
+    </div>
 
     
     <!-- Footer -->
-    <div>
-        Footer
-    </div>
+    <?php
+      include('./layouts/footer.php'); 
+    ?>
 </body>
 </html>
