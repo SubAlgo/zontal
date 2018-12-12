@@ -44,16 +44,31 @@
 
     <!-- content -->
     <div class="container-fluid">
-        <h3>Create Class</h3>
+        <div class="text-center" style="margin-top: 10px;">
+            <h3>Create Class</h3>
+        </div>
         
-        <div class="container" style="border: 1px solid black">
+        
+        <div class="container" style="border: 1px solid black; padding: 25px; width:70%;">
             <form action="" id="create_class" method="get" style="margin-top:10px;">
                 <input type="hidden" id="teacher" value="<?php echo("{$_SESSION['email']}"); ?>">
+
+                
+                <div class="row">
+                    <div class="col-md-5">
+                        <p>Class id: </p>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" size="40" id="cid" name="cid" placeholder="Ex. CS441">
+                        <span class="btn btn-primary" id="btn_check">Check id</span>
+                    </div>
+                </div>
+                
 
                 <div class="text-center1 row">
                     <div class="col-md-5">ชื่อคลาส: </div>
                     <div class="col-md-7">
-                        <input type="text" size="40" id="subject" name="subject" placeholder="Ex. CS441">
+                        <input type="text" size="40" id="subject" name="subject" placeholder="CS 411 By Aj.Cho">
                     </div>
                     <hr>
                 </div>
@@ -102,7 +117,7 @@
                     
                 </div>
 
-                <div class="row" style="margin-top:10px;">
+                <div class="row" style="margin-top:10px; ">
                     <div class="col-md-5">จำนวนนักศึกษาต่อกลุ่ม:</div>
                     <div class="col-md-7">
                         <select name="perGroup" id="perGroup">
@@ -188,6 +203,7 @@
                 </div>
 
                 <!-- Time input -->
+                <!--
                 <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-11">
@@ -195,6 +211,7 @@
                     </div>
                 </div>
 
+                
                 <div id="time_set" style="display:none">
                     <div class="row">
                         <div class="col-md-3 text-right">
@@ -215,33 +232,61 @@
                         </div>
                     </div>
                 </div>
+                -->
                 
                 <div class="row text-center" style="padding-top:5px">
                     <div class="col-md-12">
                         <!-- <input class="btn btn-primary" type="submit" value="Open"> -->
                         <span class="btn btn-primary" id="btn_open">Create</span>
                         <!-- <span class="btn btn-success" id="btn_gen">Generate</span> -->
-                        <span class="btn btn-danger" id="btn_close">Cancel</span>
+                        <span class="btn btn-danger" id="btn_cancel">Cancel</span>
                     </div>
                 </div>
-                
-            
             </form>
+            
         </div>
+        <div style="height: 50px;"></div>
     </div>
     
     <script type="text/javascript">
         $(document).ready(function () {
+            let cid;
             let nGroup;
             let perGroup;
             let nStudent = 0;
 
-            $('#btn_close').on('click', () => {
-                nGroup = $('#nGroup').val()
-                perGroup = $('#perGroup').val()
-                nStudent = nGroup * perGroup
-                
-                $('#nStudent').html(nStudent  + " คน")
+            let cidStatus =false;
+
+
+            $('#btn_check').on('click', ()=>{
+                cid = $('#cid').val();
+                cid = cid.trim();
+                objCid = {'cid': cid}
+
+                if(cid == '') {
+                    alert("กรุณากำหนด Class id \nPleace fill in Class id.")
+                } else {
+                    $.ajax({
+                        url: 'ajax_check_classid.php',
+                        type: 'post',
+                        data: objCid,
+                        success: function(result) {
+                            if(result.trim() == 'have') {
+                                cidStatus = false
+                                alert("ID: "+ cid + " มีในระบบแล้ว กรุณากำหนด Class id ใหม่")
+                            } else {
+                                cidStatus = true
+                                alert("คุณสามารถ id นี้ได้")
+                            }
+                            console.log(result)
+                        }
+                    })
+                }
+            })
+
+            $('#btn_cancel').on('click', () => {
+                //location.reload();
+                alert(cid)
             })
 
             //ถ้าเปลี่ยนค่าจำนวนกลุ่ม ให้...
@@ -317,9 +362,27 @@
                 }
             });
 
+            
+
 
             //ปุ่มสำหรับสร้าง class เรียน
             $("#btn_open").on("click", ()=>{
+                cidInput = $('#cid').val();
+                cidInput = cidInput.trim();
+
+                //ตรวจสอบว่าได้ check classID แล้วหรือยัง
+                if(cidStatus == false) {
+                    alert("กรุณาตรวจสอบ Class id")
+                    return false
+                }
+
+                //กรณี user เปลี่ยนค่า ClassId หลังตรวจสอบด้วยปุ่ม CheckId
+                if(cidInput != cid) {
+                    alert("กรุณาตรวจสอบ Class id")
+                    return false
+                }
+
+                //alert(cid)                
                 let subject, desc, pass, perGroup;
                 let v = a = k = 0;
                 let date_start, date_end
@@ -339,24 +402,19 @@
                 let checkA = $("#a:checked").length;
                 let checkK = $("#k:checked").length;
 
-                
+
                 if(nStudent == 0) {
                     alert("ไม่สามารถสร้างคลาสได้ \n เนื่องจากกำหนดจำนวนกลุ่ม หรือ นักศึกษาต่อกลุ่มไม่ถูกต้อง")
                     return false
                 }
-                alert(nStudent)
-
-                
-                
+               
                 if(checkVAK != 0) {
                     if(checkV != 0) {
                         v = v + 1
                     }
-
                     if(checkA != 0) {
                         a++
                     }
-
                     if(checkK != 0) {
                         k++
                     }
@@ -374,8 +432,9 @@
                     date_start = $("#date_start").val();
                     date_end = $("#date_end").val();
                 }
-                
-                let data = {teacher: teacher,
+
+                let data = {classid: cid,
+                            teacher: teacher,
                             subject : subject,
                             desc : desc,
                             pass: pass,
@@ -391,15 +450,27 @@
                             date_end: date_end                
                             };
                 console.log(data)
+                            
                 
                 $.ajax({
                     url: 'ajax_createclass.php',
                     type: 'post',
                     data: data,
                     success: function(result) {
-                        alert(result)
+                        if(result.trim() == "successsuccess") {
+                            alert("สร้างคลาสสำเร็จ")
+                            location.reload();
+                        } else {
+                            alert("เกิดข้อผิดพลาดในการสร้างคลาส!")
+                        }
+                        
                     }
                 });
+                
+                
+                
+
+                
             
                 //var obj = JSON.parse(jso);
 

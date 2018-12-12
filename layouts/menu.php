@@ -24,6 +24,7 @@
 
 
 <?php
+/*
     if( (!isset($_SESSION['email'])) && (!isset($_SESSION['permission'])) ) {
         echo("<a href='http://localhost/zontal/login.php'>Login</a> | ");
         echo("<a href='http://localhost/zontal/student_register.php'>Student_Register</a> | ");
@@ -32,10 +33,10 @@
 
     if( (isset($_SESSION['email'])) && (isset($_SESSION['permission'])) ) {
         if($_SESSION['permission'] == 2) {
-            echo("<a href='http://localhost/zontal/'>Teacher Dashboard</a> | ");
-            echo("<a href='http://localhost/zontal/group_setting.php'>Create_Group</a> | ");
+            echo("<a href='http://localhost/zontal/'>TEACHER DASHBOARD</a> | ");
+            echo("<a href='http://localhost/zontal/group_setting.php'>CREATE CLASS</a> | ");
             //echo("<a href='http://localhost/zontal/generate.php'>Generate</a> | ");
-            echo("<a href='http://localhost/zontal/logout.php'>Logout</a>");
+            echo("<a href='http://localhost/zontal/logout.php'>LOGOUT</a>");
         }
 
         if($_SESSION['permission'] == 3) {
@@ -45,7 +46,37 @@
             echo("<a href='http://localhost/zontal/logout.php'>Logout</a>");
         }
     }
+    */
 ?>
+
 </div>
 
+<nav class="navbar navbar-expand-lg navbar-white bg-info text-white">
+  <div class="collapse navbar-collapse text-center" id="navbarNavAltMarkup" style="border1: 1px solid">
+    <div class="navbar-nav mr-auto mt-2 mt-lg-0" style="margin: auto;">
+        <?php
+            if( (!isset($_SESSION['email'])) && (!isset($_SESSION['permission'])) ) {
+                echo("<a class='nav-item nav-link' href='http://localhost/zontal/login.php'>Login</a>");
+                echo("<a class='nav-item nav-link' href='http://localhost/zontal/student_register.php'>Student Register</a>");
+                echo("<a class='nav-item nav-link' href='http://localhost/zontal/teacher_register.php'>Teacher Register</a>");
+            }
 
+            if( (isset($_SESSION['email'])) && (isset($_SESSION['permission'])) ) {
+                if($_SESSION['permission'] == 2) {
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/'>Teacher Dashboard</a>");
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/group_setting.php'>Create Class</a>");
+                    //echo("<a href='http://localhost/zontal/generate.php'>Generate</a> | ");
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/logout.php'>Logout</a>");
+                }
+        
+                if($_SESSION['permission'] == 3) {
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/student_dashboard.php'>Student Dashboard</a>");
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/student_join_class.php'>Join Class</a>");
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/vaktest.php'>VAK Test</a>");
+                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/logout.php'>Logout</a>");
+                }
+            }
+        ?>
+    </div>
+  </div>
+</nav>

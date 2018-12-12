@@ -102,7 +102,7 @@
 
             <div class="row text-center">
                 <div class="col-md-12">
-                    <input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register">
+                    <span class="btn btn-primary" id="regis">Register</span>
                     <a class="btn btn-primary" href="./login.php">Back</a> 
                 </div>
             </div>
@@ -123,60 +123,85 @@
 
 <!-- JAVASCRIPT -->
 <script type="application/javascript">
-    function checkPassword() 
-    {
-        var pass = document.getElementById("password").value;
-        var confirm = document.getElementById("confirm").value;
-        var id = document.getElementById("userid").value;
 
-        if(id[0] != "a") 
-        {
-            alert("กำหนด ID ไม่ถูกต้อง")
-            return false
-        }
-        
-        //Check ความยาว Password
-        if(pass.length < 4) 
-        {
-            alert("Password ต้องมากกว่า4 ตัวอักษร")
-            return false
-        }
-        
-        if(pass != confirm) 
-        {
-            alert('ยืนยัน Password ไม่ถูกต้อง')
-            return false
+    $(document).ready(function() {
+
+        function validateEmail(email) {
+            let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
         }
 
-        
 
-    }
+        $("#regis").on('click', ()=> {
+            let email       = $("#email").val()
+            let id          = $("#userid").val()
+            let name        = $("#name").val()
+            let password    = $("#password").val()
+            let confirm     = $("#confirm").val()
+            let permission  = 2
+
+            
+            //Check Email
+            if(!validateEmail(email)) {
+                alert("กรุณาระบุ Email ให้ถูกต้อง")
+                return false
+            }
+
+            //Check studentID is not Empty
+            if(id.trim() == "") {
+                alert("กรุณาใส่ Teacher ID")
+                return false
+            }
+            
+            //Check studentName is not Empty
+            if(name.trim() == "") {
+                alert("กรุณาใส่ ชื่อ-นามสกุล")
+                return false
+            }
+
+            //Check Password
+            if(password.length < 4) {
+                alert("Password ต้องมากกว่า4 ตัวอักษร")
+                return false
+            }
+
+            if(password != confirm) {
+                alert('ยืนยัน Password ไม่ถูกต้อง')
+                return false
+            }
+
+            let data = {'email'     : email,
+                        'id'        : id,
+                        'name'      : name,
+                        'password'  : password,
+                        'confirm'   : confirm,
+                        'permission': permission
+                       }
+
+            $.ajax({
+                type: "post",
+                url: "ajax_user_register.php",
+                data: data,
+                success: function (res) {
+                    if(res.trim() == "success") {
+                        alert("ลงทะเบียนสำเร็จ");
+                        location.reload();
+                    } else if(res.trim() == "email") {
+                        alert("Email: [" + email  +"] ได้ถูกใช้ลงทะเบียนแล้ว")
+                    } else {
+                        alert(res)
+                        location.reload();
+                    }
+                    
+                }
+            });
+
+
+        })
+        
+    })
+  
 </script>
 
 <!-- PHP -->
-<?php
-    //$method = $_SERVER['REQUEST_METHOD'];
-    //echo($method);
-    if($method == "POST") 
-    {
-        //ตัดช่องว่าง และเตรียมข้อมูล
-        $email      = trim((string)$_POST['email']);
-        $u_id     = trim((string)$_POST['userid']);
-        $name       = trim((string)$_POST['name']);
-        $password   = trim((string)$_POST['password']);
-        $confirm    = trim((string)$_POST['confirm']);
 
-        //สร้างคำสั่ง sql ในการ insert
-        $sql = "INSERT INTO `users` (`email`, `u_id`, `name`, `password`, `p_id`) 
-                VALUES ('{$email}', '{$u_id}', '{$name}', '{$password}', '2');";
-
-        //ประมวลผลคำสั้่ง sql
-        if(mysqli_query($conn, $sql) == false) 
-        {
-            echo "<div align='center'><b> Error: " .  mysqli_error($conn)."</b></div>";
-        }
-        //mysqli_query($conn, $sql);
-    } else if($method == "GET") {
-        //echo "e";
-    }
-?>

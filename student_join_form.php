@@ -226,23 +226,27 @@
                <!-- สร้าง FORM สำหรับกรอกข้อมูลคะแนนรายวิชาที่ต้องการ -->
                
                 <?php
+                    //check ก่อนว่า มีรายวิชาที่ต้องการก่อนหน้าหรือไม่
+                    if($subject_req[0] != "") {
+                        for($i=0; $i<count($subject_req); $i++){
+                            echo("<div class='form-group-row'>");
+                            echo("<label class='col-sm-4 col-form-label' name='subject'>คะแนนวิชา {$subject_req[$i]}</label>");
+                            echo("<input type='hidden' name='subject' value='{$subject_req[$i]}'>");
+                            //echo("<input class='col-sm-4 col-form-input' name='score'  type='number' min='0' max='4' id='reqScore{$i}'>");
+                            echo("<select name='score'> 
+                                    <option value='4'>A</option>
+                                    <option value='3.5'>B+</option>
+                                    <option value='3'>B</option>
+                                    <option value='2.5'>C+</option>
+                                    <option value='2'>C</option>
+                                    <option value='1.5'>D</option>
+                                    <option value='0'>F</option>
+                                    </select>");
+                            echo("</div>");
+                        }
+                    } 
                     
-                    for($i=0; $i<count($subject_req); $i++){
-                        echo("<div class='form-group-row'>");
-                        echo("<label class='col-sm-4 col-form-label' name='subject'>คะแนนวิชา {$subject_req[$i]}</label>");
-                        echo("<input type='hidden' name='subject' value='{$subject_req[$i]}'>");
-                        //echo("<input class='col-sm-4 col-form-input' name='score'  type='number' min='0' max='4' id='reqScore{$i}'>");
-                        echo("<select name='score'> 
-                                <option value='4'>A</option>
-                                <option value='3.5'>B+</option>
-                                <option value='3'>B</option>
-                                <option value='2.5'>C+</option>
-                                <option value='2'>C</option>
-                                <option value='1.5'>D</option>
-                                <option value='0'>F</option>
-                                </select>");
-                        echo("</div>");
-                    }
+                    
                 ?>
                 
                 <div class="text-center" style="margin-bottom: 10px;">

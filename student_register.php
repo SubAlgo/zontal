@@ -73,7 +73,8 @@
 
         <div class="row text-center">
             <div class="col-md-12">
-                <input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register">
+                <span class="btn btn-primary" id="regis">Register</span>
+                <!--<input type="submit" class="btn btn-primary" onclick="return checkPassword();"  value="Register"> -->
                 <a class="btn btn-primary" href="./login.php">Back</a> 
             </div>
         </div>
@@ -94,28 +95,89 @@
 
 <!-- JAVASCRIPT -->
 <script type="application/javascript">
-    function checkPassword() 
-    {
-        var pass = document.getElementById("password").value;
-        var confirm = document.getElementById("confirm").value;
-        
-        //Check ความยาว Password
-        if(pass.length < 4) 
-        {
-            alert("Password ต้องมากกว่า4 ตัวอักษร")
-            return false
+
+    $(document).ready(function() {
+
+        function validateEmail(email) {
+            let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
         }
+
+
+        $("#regis").on('click', ()=> {
+            let email       = $("#email").val()
+            let id          = $("#userid").val()
+            let name        = $("#name").val()
+            let password    = $("#password").val()
+            let confirm     = $("#confirm").val()
+            let permission  = 3
+
+            
+            //Check Email
+            if(!validateEmail(email)) {
+                alert("กรุณาระบุ Email ให้ถูกต้อง")
+                return false
+            }
+
+            //Check studentID is not Empty
+            if(id.trim() == "") {
+                alert("กรุณาใส่ Student ID")
+                return false
+            }
+            
+            //Check studentName is not Empty
+            if(name.trim() == "") {
+                alert("กรุณาใส่ ชื่อ-นามสกุล")
+                return false
+            }
+
+            //Check Password
+            if(password.length < 4) {
+                alert("Password ต้องมากกว่า4 ตัวอักษร")
+                return false
+            }
+
+            if(password != confirm) {
+                alert('ยืนยัน Password ไม่ถูกต้อง')
+                return false
+            }
+
+            let data = {'email'     : email,
+                        'id'        : id,
+                        'name'      : name,
+                        'password'  : password,
+                        'confirm'   : confirm,
+                        'permission': permission
+                       }
+
+            $.ajax({
+                type: "post",
+                url: "ajax_user_register.php",
+                data: data,
+                success: function (res) {
+                    if(res.trim() == "success") {
+                        alert("ลงทะเบียนสำเร็จ");
+                        location.reload();
+                    } else if(res.trim() == "email") {
+                        alert("Email: [" + email  +"] ได้ถูกใช้ลงทะเบียนเรียบร้อยแล้ว")
+                    } else {
+                        alert(res)
+                        location.reload();
+                    }
+                    
+                }
+            });
+
+
+        })
         
-        if(pass != confirm) 
-        {
-            alert('ยืนยัน Password ไม่ถูกต้อง')
-            return false
-        }
-    }
+    })
+  
 </script>
 
 <!-- PHP -->
 <?php
+/*
     //$method = $_SERVER['REQUEST_METHOD'];
     //echo($method);
     if($method == "POST") 
@@ -133,12 +195,15 @@
         $sql = "INSERT INTO `users` (`email`, `u_id`, `name`, `password`, `v`, `a`, `k`, `p_id`) 
                 VALUES ( '{$email}', '{$u_id}', '{$name}', '{$password}', '', '', '', '3');"; 
         //ประมวลผลคำสั้่ง sql
-        if(mysqli_query($conn, $sql) == false) 
-        {
+        if(mysqli_query($conn, $sql) == false) {
             echo "<div align='center'><b> Error: " .  mysqli_error($conn)."</b></div>";
+        } else {
+            echo '<script type="text/javascript">alert("ลงทะเบียนสำเร็จ");</script>';
+            echo('<script type="text/javascript">location.reload();</script>');
         }
         //mysqli_query($conn, $sql);
     } else if($method == "GET") {
         //echo "e";
     }
+    */
 ?>

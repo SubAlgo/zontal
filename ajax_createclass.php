@@ -3,7 +3,7 @@
 
     $data = $_POST;
 
-    $classid        = "";
+    $classid        = $data['classid'];
     $subject        = $data['subject'];
     $desc           = $data['desc'];
     $teacher        = $data['teacher'];
@@ -21,6 +21,8 @@
     if(isset($data['prev'])) {
         $prev = $data['prev'][0];
     }
+
+    //echo($classid);
     
     //-----สร้าง CLASS_ID-----
     
@@ -36,7 +38,7 @@
 
         return $newID;
     }
-    $classid = createClassid($conn);
+    //$classid = createClassid($conn);
     
     //-----สร้าง CLASS_ID-----
     
@@ -81,7 +83,7 @@
                     ) ";
 
     $mystr;
-    /**/
+    
     if(mysqli_query($conn, $sql) == false) {
         $mystr = "<div align='center'><b> Error: " .  mysqli_error($conn)."</b></div>";
         echo $mystr;
