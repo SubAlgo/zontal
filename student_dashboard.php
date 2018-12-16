@@ -49,7 +49,10 @@
                 WHERE
                     student_score.std_email = '{$_SESSION['email']}'
                 GROUP BY
-                    class_id";
+                    class_id
+                ORDER BY
+                    student_score.id DESC";
+
         $result = mysqli_query($conn, $sql);
 
         $nClass = mysqli_num_rows($result);
@@ -64,14 +67,23 @@
         </div>
 
         <div class="container">
-            <p class="text-center"><?php echo("<b>Class ที่เข้ารวม :</b> <u>{$nClass}</u> <b>class</b>"); ?></p>
+            <p class="text-center">
+                <b>You have joined : </b> 
+                    <?php 
+                        if($nClass <= 1) {
+                            echo("<u>{$nClass}</u> <b>class</b>");
+                        } else {
+                            echo("<u>{$nClass}</u> <b>classes</b>");
+                        }
+                    ?>
+            </p>
 
             <table class="table table-bordered table-striped  text-center">
                 <thead class="thead-dark">
-                    <th scope="col">รหัส Class</th>
-                    <th scope="col">ชื่อ Class</th>
-                    <th scope="col">อาจารย์เจ้าของ Class</th>
-                    <th scope="col">ผลลัพธ์การจัดกลุ่ม</th>
+                    <th scope="col">Class id</th>
+                    <th scope="col">Class name</th>
+                    <th scope="col">Advisor</th>
+                    <th scope="col">Status</th>
                 </thead>
                 <tbody>
                     <?php
@@ -82,7 +94,7 @@
                                 echo("<td>{$row['title']}</td>");
                                 echo("<td>{$row['name']}</td>");
                                 if($row['classid'] == '') {
-                                    echo("<td><span class='btn btn-info disabled'>ยังไม่มีการจัดกลุ่ม</span></td>");
+                                    echo("<td><span class='btn btn-info disabled'>Group not generated</span></td>");
                                 } else {
                                     echo("<td><a class='btn btn-primary' href='./showgrouped.php?c_id={$row['classid']}'>View</a></td>");
                                 }
