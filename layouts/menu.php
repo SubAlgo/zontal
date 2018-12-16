@@ -56,24 +56,24 @@
     <div class="navbar-nav mr-auto mt-2 mt-lg-0" style="margin: auto;">
         <?php
             if( (!isset($_SESSION['email'])) && (!isset($_SESSION['permission'])) ) {
-                echo("<a class='nav-item nav-link' href='http://localhost/zontal/login.php'>Login</a>");
-                echo("<a class='nav-item nav-link' href='http://localhost/zontal/student_register.php'>Student Register</a>");
-                echo("<a class='nav-item nav-link' href='http://localhost/zontal/teacher_register.php'>Teacher Register</a>");
+                echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/login.php'>Login</a>");
+                echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/student_register.php'>Student Register</a>");
+                echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/teacher_register.php'>Teacher Register</a>");
             }
 
             if( (isset($_SESSION['email'])) && (isset($_SESSION['permission'])) ) {
                 if($_SESSION['permission'] == 2) {
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/'>Teacher Dashboard</a>");
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/group_setting.php'>Create Class</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/'>Teacher Dashboard</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/group_setting.php'>Create Class</a>");
                     //echo("<a href='http://localhost/zontal/generate.php'>Generate</a> | ");
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/logout.php'>Logout</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/logout.php'>Logout</a>");
                 }
         
                 if($_SESSION['permission'] == 3) {
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/student_dashboard.php'>Student Dashboard</a>");
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/student_join_class.php'>Join Class</a>");
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/vaktest.php'>VAK Test</a>");
-                    echo("<a class='nav-item nav-link' href='http://localhost/zontal/logout.php'>Logout</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/student_dashboard.php'>student dashboard</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/student_join_class.php'>join new class</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/vaktest.php'>leaning style test</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/logout.php'>logout</a>");
                 }
             }
         ?>
