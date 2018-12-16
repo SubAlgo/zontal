@@ -3,27 +3,25 @@
     include('config.php');
 
     $data = $_POST;
-    //echo($data['classid']);
-    //echo($data['data']);
 
-    $classid = $data['classid'];
+    $classid    = $data['cid'];
+    $classpass  = $data['cpass'];
+
     
     $sql = "SELECT class.id, class.title, class.description, users.name
             FROM class LEFT JOIN users ON class.teacher_email = users.email
-            WHERE class.id = '{$classid}'";
+            WHERE class.id = '{$classid}' AND class.password = '{$classpass}'";
 
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
         while($row = $result->fetch_assoc()) {
             
-            $re = json_encode($row);
-            echo($re);
-            //echo("x");
+            $res = json_encode($row);
+            echo($res);
         } 
     } else {
-        $arr = array("error");
-        $myJSON = json_encode($arr);
-        echo $myJSON;
+        echo("error");
     }
+    
 ?>

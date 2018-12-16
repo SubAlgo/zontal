@@ -76,13 +76,13 @@
     <div class="container" style="margin-top: 10px;">
         <div class="row">
             <div class="col-md-12 text-center">
-                <h4>ลงทะเบียนเข้าร่วมคลาส</h4>
+                <h4>Join new class</h4>
             </div>
         </div>
         
         
         
-        <form id="qqq" action="./student_join_form.php" method="post">
+        <form id="join_class" action="./student_join_form.php" method="post">
             <?php
                 //สร้าง input hidden เพื่อเก็บข้อมูล student email
                 echo("<input type='hidden' name='std_email' id='std_email' value='{$_SESSION['email']}'>");
@@ -92,13 +92,32 @@
         </form>
         
         <div class="container">
-            <div class="row">
+
+            <div class="row" style="width: 500px; margin-left: 30%; margin-top: 10px;">
+                <div class="col-md-4">
+                    <b>Class id: </b>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" id="c_id" name="c_id">
+                </div>
+            </div>
+
+            <div class="row" style="width: 500px; margin-left: 30%; margin-top: 10px;">
+                <div class="col-md-4">
+                    <b>Verification code: </b>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" id="c_password" name="c_password">
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
                 <div class="col-md-12 text-center">
-                    <b>กรอกไอดีของคลาส:</b> 
-                    <input type="text" id="search" name="search">
                     <span class="btn btn-primary" id="btn_search">ค้นหา</span>
                 </div>
             </div>
+
+
 
             <div class="row" style="margin-top:10px;">
                 <div class="col-md-12 text-center">
@@ -111,10 +130,9 @@
             <table class="table table-bordered">
                 <thead>
                     <tr class="text-center">
-                        <td><b>ชื่อวิชา</b></td>
-                        <td><b>คำอธิบาย</b></td>
-                        <td><b>ผู้สอน</b></td>
-                        <td><b>เข้าร่วม</b></td>
+                        <td><b>Class name</b></td>
+                        <td><b>Description</b></td>
+                        <td><b>Advisor</b></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,17 +140,19 @@
                         <td><p id="subjectname"></p></td>
                         <td><p id="desc"></td>
                         <td><p id="teacher"></p></td>
-                        <td>
-                            <input class="btn btn-primary" style="display:none" id="join" type="submit" value="Join" form="qqq">
-                        </td>
+                        
                     </tr>
                 </tbody>
-            
             </table>
+        </div>
 
- 
-
-            
+        <div class="container">
+            <div class="col-md-12 text-center">
+                
+                <input class="btn btn-primary" style="display:none" id="join" type="submit" value="Submit" form="join_class">
+                <span class="btn btn-danger" style="display:none" id="btn_cancel">Cancel</span>
+                <!--<a href="./student_dashboard.php" class="btn btn-danger" style="display:none" id="cancel">Cancel</a> -->     
+            </div>
         </div>
     </div>
     
@@ -145,66 +165,66 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        let glo_classid = "";    //ตัวแปรแบบ global สำหรับเก็บ class_id
+        let cid     = "";
+        let cpass   = "";
 
-        $("#btn_search").on("click", () => {
-            $("#score_req").val("");
-            let text = $("#search").val();
-            $("#demo").html(text);
+        $("#btn_search").on("click", function() {
+            cid     = $("#c_id").val()
+            cpass   = $("#c_password").val()
 
-            let data = {'classid': text};
+            if(cid.trim() == "") {
+                alert("กรุณากรอกข้อมูล class id");
+                return false;
+            }
 
+            if(cpass.trim() == "") {
+                alert("กรุณากรอกข้อมูล verification code");
+                return false;
+            }
+
+            let data = {'cid' : cid, 'cpass' : cpass};
+
+
+            
             $.ajax({
-                url: 'ajax_student_join_class.php',
-                type: 'post',
+                type: "post",
+                url: "ajax_student_join_class.php",
                 data: data,
-                success: function(result) {
+                success: function (res) {
+                    console.log(res)
+                    
 
-                    /*1 check ว่ามีข้อมูลวิชาหรือไม่ 
-                    #โดย สร้างตัวแปรชื่อ test มาเพื่อเก็บค่าผลลัพธ์การ parse resullt
-                    #ถ้าผลลัพธ์ ที่ได้กลับมา คือ คำว่า error
-                    #ให้ alert ว่า ไม่มีรหัส class นี้
-                    */
-                    console.log(result)
-                    //alert(typeof result)
-
-                    let test = JSON.parse(result)
-                    //ถ้าส่งข้อความกลับมาว่า "error"
-                    //ให้เคลีย form แล้ว alert ว่า "ไม่มีรหัส class นี้"
-                    if(test == "error") {
+                    if(res.trim() == "error") {
+                        $("#demo").html("-")
                         $("#subjectname").html("-")
                         $("#desc").html("-")
                         $("#teacher").html("-")
                         $("#join").attr("style", "display:none");
+                        $("#btn_cancel").attr("style", "display:none");
+                        alert("ไม่มี class ที่ค้นหา หรือ verification code ไม่ถูกต้อง");
+                        return false
+                    }
+                    
+                    let obj = JSON.parse(res)
+                    $("#demo").html(obj['id'])
+                    $("#subjectname").html(obj['title']);
+                    $("#desc").html(obj['description']);
+                    $("#teacher").html(obj['name'])
+                    $("#join").attr("style", "display");
+                    $("#btn_cancel").attr("style", "display");
 
-                        alert("ไม่มีรหัส class นี้")
-                    } else{
-                        console.log(result)
-                        let objResult = JSON.parse(result)
-                        
-                        console.log(objResult)
-                        $("#subjectname").html(objResult['title'])
-                        $("#desc").html(objResult['description'])
-                        $("#teacher").html(objResult['name'])
-                        $("#join").attr("style", "display");
-                        //$("#join").html("-")
-
-                        glo_classid = objResult['id']
-
-                        let st = $("#std_id").val();
-                        //set input type hidden id="class_id" ให้ value = class ที่เลือก 
-                        //เพื่อใช้ในการสร้าง form การกรอกข้อมูลต่อไป
-                        $("#class_id").val(glo_classid)
-                    } 
+                    $("#class_id").val(obj['id'])
+                    
                 }
-            })
-        });
+            });
 
-        //$("#btn_join").on("click", () => {
-        //    //alert(glo_classid)
-        //    let st = $("#std_id").val();
-        //    alert(st + ' | ' + glo_classid)
-        //    $("#class_id").val(glo_classid)
-        //});
+
+        })
+
+        $("#btn_cancel").on("click", function() {
+            location.reload();
+        })
+
+
     });
 </script>
