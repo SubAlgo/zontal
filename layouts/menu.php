@@ -72,7 +72,7 @@
                 if($_SESSION['permission'] == 3) {
                     echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/student_dashboard.php'>student dashboard</a>");
                     echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/student_join_class.php'>join new class</a>");
-                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/vaktest.php'>leaning style test</a>");
+                    echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/vaktest.php'>learning style test</a>");
                     echo("<a class='btn btn-primary mr-2 nav-item nav-link' style='width:155px' href='http://localhost/zontal/logout.php'>logout</a>");
                 }
             }

@@ -60,7 +60,7 @@
         <form action="" method="post">
 
             <div class="form-group">
-                <div class="row">
+                <div class="row mt-2">
                     <!-- Email -->
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
@@ -69,7 +69,7 @@
                     <div class="col-md-4"></div>
                 </div>
                 
-                <div class="row" style="margin-top:10px;">
+                <div class="row mt-2" >
                     <!-- Password -->
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
@@ -78,17 +78,21 @@
                     <div class="col-md-4"></div>
                 </div>
                 
-                <div class="row text-center" style="margin-top:10px">
+                <div class="row text-center mt-2">
                     <!-- Submit button -->
                     <div class="col-md-12">
                         <input type="submit" id="submit" class="btn btn-primary" value="Login">
-                        <button type="button" class="btn btn-primary" id="btn-back" name="btn-back">Register</button>    
+                        <!--<button type="button" class="btn btn-primary" id="btn-back" name="btn-back">Register</button> -->
                     </div>
                 </div>
             </div>
         </form>
+        
+        <div class="container text-center mt-2">
+            <a class="text-primary" href="./forgetpassword.php">Forgot password</a>
+        </div>
 
-        <div class="container text-center" style="margin-top:10px">
+        <div class="container text-center mt-2">
             <div class="row">
                 <div class="col-md-12">
                     <?php
