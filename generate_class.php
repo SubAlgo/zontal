@@ -41,19 +41,20 @@
         //get ข้อมูลของ class
         function getClassData ($conn, $classid) {
             $sql = "SELECT
-                        class.id,
-                        class.title,
-                        class.teacher_email,
-                        class.description,
-                        class.pergroup,
-                        class.student_limit,
-                        class.v,
-                        class.a,
-                        class.k
+                        `class`.`id`,
+                        `class`.`title`,
+                        `class`.`teacher_email`,
+                        `class`.`description`,
+                        `class`.`pergroup`,
+                        `class`.`student_limit`,
+                        `class`.`v`,
+                        `class`.`a`,
+                        `class`.`k`,
+                        `class`.`fitness_score`
                     FROM
                         class
                     WHERE
-                        class.id = '{$classid}'";
+                        `class`.`id` = '{$classid}'";
 
             $result = mysqli_query($conn, $sql);
             $data = $result->fetch_assoc();
@@ -374,6 +375,12 @@
         $perGroup   = $classData['pergroup'];
         $stdLimit   = $classData['student_limit'];
 
+        if($classData['fitness_score'] == null ) {
+            $oldFitnessScore = 0;
+        } else {
+            $oldFitnessScore = $classData['fitness_score'];
+        }
+
         $nStudent   = getTotalStudent($conn, $classid);
         $studentData = getStudentData($conn, $classid,$v_req, $a_req, $k_req );     //source หลักข้อมูลนักศึกษา
         //จำนวนกลุ่มทั้งหมด
@@ -610,21 +617,31 @@
 
 
 
-            <div class="container" style="background-color:green; margin-top:10px;">
+            <div class="container" style="background-color:green1; margin-top:10px;">
                 <div class="row">
                     <div class="col-md-12 text-center" >
                         <p><h3>ผลลัพธ์การจัดกลุ่ม</h3></p>
                         <?php 
                             //Show Result Best Group
-                            echo("<h5>คะแนน : ".json_encode($bestGroup['score']). "</h5>");
+                            if($oldFitnessScore != null) {
+                                echo("<h5>Fitness score เดิม : ". $oldFitnessScore. "</h5>");
+                                echo("<h5>Fitness score ใหม่ : ".json_encode($bestGroup['score']). "</h5>");
+                            } else {
+                                echo("<h5>Fitness score : ".json_encode($bestGroup['score']). "</h5>");
+                            }
+
+                         
+                            
                             //$sendValue = json_encode($bestGroup);
                             $sendValue = [  'classid' => $classid, 
-                                            'group' => $bestGroup['group']
+                                            'group' => $bestGroup['group'],
+                                            'score' => $bestGroup['score']
                                         ];
                             
                             $sendValue = json_encode($sendValue);
                             //echo($sendValue);
                             echo("<input type='hidden' id='sendValue' value='{$sendValue}'>");
+                            /*
                             $i = 1;
                             foreach($bestGroup['group'] as $v) {
                                 echo("<b>สมาชิกกลุ่มที่ [". $i ."] : </b>");
@@ -633,6 +650,37 @@
                                 }
                                 $i++;
                                 echo("<br>");
+                            }
+                            */
+
+                            
+                            
+                            $i = 1;
+                            foreach($bestGroup['group'] as $v) {
+                                echo("<table class='table text-left' style='width: 300px; margin:auto; border:1px solid;'>");
+                                    echo("<thead class='thead-dark'>");
+                                    echo("<tr>");
+                                        echo("<th>");
+                                            echo("<span>Group: {$i}</span>");
+                                            $i++;
+                                        echo("</th>");
+                                    echo("</tr>");
+                                    echo("</thead>");
+
+                                    $ii = 1;
+                                    foreach($v as $y) {
+                                        echo("<tr>");
+                                            echo("<td>");
+                                                echo("<span>");
+                                                    echo("{$ii}: ");
+                                                    print_r($y['name']);
+                                                    $ii++;
+                                                echo("</span>");
+                                            echo("</td>");
+                                        echo("</tr>");
+                                    }
+                                echo("</table");
+                                
                             }
 
                             

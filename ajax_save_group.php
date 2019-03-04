@@ -20,6 +20,8 @@
 
     $classid    = $arrClassid;
     $group      = $objGroup;
+    $score      = json_encode($data['score']);
+   // $score      = (float)$score;
 
     $re         = false;
 
@@ -27,6 +29,23 @@
 
 <?php
     // function
+    function tofloat($num) {
+        $dotPos = strrpos($num, '.');
+        $commaPos = strrpos($num, ',');
+        $sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos : 
+            ((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+       
+        if (!$sep) {
+            return floatval(preg_replace("/[^0-9]/", "", $num));
+        } 
+    
+        return floatval(
+            preg_replace("/[^0-9]/", "", substr($num, 0, $sep)) . '.' .
+            preg_replace("/[^0-9]/", "", substr($num, $sep+1, strlen($num)))
+        );
+    }
+
+     //---------------------------------------
     
      //function สำหรับ check ว่า class ที่จะจัดกลุ่ม มีการจัดกลุ่มมาหรือยัง
      function checkHasData($conn, $classid) {
@@ -55,22 +74,61 @@
      }
 
      //function สำหรับ update ข้อมูลในกรณีมีข้อมูลอยู่แล้ว
-     function updateResultGrouped($conn, $classid, $group) {
-         $sql = "UPDATE `result_grouped` SET `result` = '{$group}' WHERE `result_grouped`.`id` = '{$classid}'";
+     function updateResultGrouped($conn, $classid, $group, $score) {
+        $err = 0;
+        $score = tofloat($score);
+        $sql = "UPDATE `result_grouped` SET `result` = '{$group}' WHERE `result_grouped`.`id` = '{$classid}'";
+        $sql2 = "UPDATE `class` SET `fitness_score` = '{$score}' WHERE `class`.`id` = '{$classid}'";
+       // $sql3 = "UPDATE `class` SET `fitness_score` = '3.1458399488659916' WHERE `class`.`id` = 'class3'; "
+        
+        //เก็บผลลัพธ์การจัดกลุ่ม
+        if(mysqli_query($conn, $sql)) {
+            $err += 0;
+        } else {
+            $err += 1;
+        }
 
-         if(mysqli_query($conn, $sql)) {
+        //เก็บผลคะแนนการจัดกลุ่ม
+        if(mysqli_query($conn, $sql2)) {
+            $err += 0;
+        } else {
+            $err += 1;
+        }
+        
+        //ถ้ามี error ให้ return false
+        if($err == 0) {
             return true;
-         } else {
-             return false;
-         }
+        } else {
+            return false;
+        }
      }
 
      //function บันทึกข้อมูล
-     function insertResultGrouped($conn, $classid, $group) {
+     function insertResultGrouped($conn, $classid, $group, $score) {
+        $err = 0;
+        $score = tofloat($score);
         $sql = "INSERT INTO result_grouped (classid, result)
                 VALUES ('{$classid}' , '{$group}')
                 ";
+        
+        $sql2 = "UPDATE `class` SET `fitness_score` = '{$score}' WHERE `class`.`id` = '{$classid}'";
+
+        //เก็บผลลัพธ์การจัดกลุ่ม
         if(mysqli_query($conn, $sql)) {
+            $err += 0;
+        } else {
+            $err += 1;
+        }
+
+        //เก็บผลคะแนนการจัดกลุ่ม
+        if(mysqli_query($conn, $sql2)) {
+            $err += 0;
+        } else {
+            $err += 1;
+        }
+        
+        //ถ้ามี error ให้ return false
+        if($err == 0) {
             return true;
         } else {
             return false;
@@ -84,9 +142,9 @@
     //ถ้ามีจะ update
     //ถ้าไม่มีจะ insert
     if(checkHasData($conn, $classid)) {
-        $re = updateResultGrouped($conn, $classid, $group);
+        $re = updateResultGrouped($conn, $classid, $group, $score);
     } else {
-        $re = insertResultGrouped($conn, $classid, $group);
+        $re = insertResultGrouped($conn, $classid, $group, $score);
     }
 
     if($re) {

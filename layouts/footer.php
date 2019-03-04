@@ -10,5 +10,5 @@
 </style>
 
 <div class="footer container-friud bg-primary text-white text-center">
-    <span><b>Support:</b> [Email: pongsathon.jong@bumail.com Tell: 0979944942]</span>
+    <span>Information Technology and Innovation © 2018</span>
 </div>

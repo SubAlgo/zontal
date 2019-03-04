@@ -16,7 +16,7 @@
 <div class="container-fluid bg-primary text-white">
     <div class="row" style="height:100px;">
         <div class="col-md-3" style="margin:auto;">
-            <a style="color: inherit;" href="./index.php">ZONTAL + </a>
+            <a style="color: inherit;" href="./index.php">Group US by Learning </a>
             
         </div>
     

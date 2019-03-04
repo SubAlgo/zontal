@@ -27,9 +27,11 @@
             if(isset($_POST['email']) && isset($_POST['password'])) {
                 $email      = $_POST['email'];
                 $password   = $_POST['password'];
+                echo($email);
+                echo($password);
 
                 //สร้างคำสั่ง SQL เพื่อใช้ตรวจสอบการ Login
-                $sql = "SELECT * FROM users WHERE email = '{$email}' and password = '{$password}'";
+                $sql = "SELECT * FROM `users` WHERE `users`.`email` = '{$email}' and `users`.`password` = '{$password}'";
 
                 $result = mysqli_query($conn, $sql);
 
@@ -48,7 +50,7 @@
         }
     ?>
 
-    <title>Student Register</title>
+    <title>Login</title>
 </head>
 <body>
     <?php include('./layouts/header.php'); ?>
